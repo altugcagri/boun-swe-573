@@ -42,3 +42,10 @@ jobs:
         
       # run tests!
       - run: ./gradlew test
+      
+      # run sonarqube!
+      - run: ./gradlew sonarqube \
+        -Dsonar.projectKey=altugcagri_boun-swe-573 \
+        -Dsonar.organization=altugcagri-github \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=f889ff628e8ee6153f8887374a581a9df1693690
