@@ -12,19 +12,19 @@ At **To do** stage, tasks that will be implemented exist. Work on these tasks ha
 
 ## Tasks
 
-There are three types of tasks with labels **bug**, **doc**, and **feature**.
+There are three types of tasks with labels **bug**, **research**, **feature**, **high priority**, **medium priority** and  **low priority**.
 
 ![Task Types](/images/projectLabels.PNG "task-types")
 
-With **bug** label, bug reports will be created. Their priorities are higher than the other type of labels.
+With **bug** label, bug reports will be created. Their priorities identified from the labels  **high priority**, **medium priority** and  **low priority**.
 
-With **doc** label, documentation tasks to wiki page or any type of readme context will be created. Their priorities are the lowest ones.
+With **research** label, research tasks to wiki page or any type of readme context will be created. Their priorities identified from the labels  **high priority**, **medium priority** and  **low priority**.
 
-With **feature** label, new feature implementation tasks will be created. Their priorities are medium.
+With **feature** label, new feature implementation tasks will be created. Their priorities identified from the labels  **high priority**, **medium priority** and  **low priority**.
 
 Colors of the labels represent the priorities.     
 
-In order to create new task three templates defined respectively [bug](/.github/ISSUE_TEMPLATE/bug_report.md), [doc](/.github/ISSUE_TEMPLATE/documentation-task.md), [feature](/.github/ISSUE_TEMPLATE/feature_request.md). Tasks will be created by filling these templates.
+In order to create new task three templates defined respectively [bug](/.github/ISSUE_TEMPLATE/bug_report.md), [research](/.github/ISSUE_TEMPLATE/research-task.md), [feature](/.github/ISSUE_TEMPLATE/feature_request.md). Tasks will be created by filling these templates.
 
 ![Create Task](/images/createTask.PNG "Create Task")
 
