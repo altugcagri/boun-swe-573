@@ -44,4 +44,4 @@ jobs:
       - run: ./gradlew test
       
       # run sonarqube!
-      - run: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=altugcagri-github -Dsonar.host.url=https://sonarcloud.io  -Dsonar.login=f889ff628e8ee6153f8887374a581a9df1693690
+      - run: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io  -Dsonar.login=${SONAR_LOGIN}
