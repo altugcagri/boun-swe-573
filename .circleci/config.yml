@@ -90,11 +90,11 @@ jobs:
           paths:
             - docker-image
             
- workflows:
-  version: 2
-  test-build:
-    jobs:
-      - test
-      - build:
-          requires:
-            - test
+workflows:
+ version: 2
+ test-build:
+   jobs:
+     - test
+     - build:
+         requires:
+           - test
