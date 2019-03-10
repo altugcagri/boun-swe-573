@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  test:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -45,3 +45,56 @@ jobs:
       
       # run sonarqube!
       - run: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io  -Dsonar.login=${SONAR_LOGIN}
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+      
+    working_directory: ~/repo
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      
+    steps:
+      - checkout
+      
+      - setup_remote_docker
+      
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-
+          
+      - run: chmod +x ./gradlew
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: ./gradlew build
+      
+      - run:
+          name: Build image
+          command: |
+            docker build -t smep .
+      - run:
+          name: Save image to an archive
+          command: |
+            mkdir docker-image
+            docker save -o docker-image/image.tar smep
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-image
+            
+ workflows:
+  version: 2
+  test-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
