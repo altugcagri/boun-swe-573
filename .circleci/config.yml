@@ -99,13 +99,18 @@ jobs:
       AWS_DEFAULT_OUTPUT: json
     steps:
       - checkout
+      
       - setup_remote_docker
+      
       - attach_workspace:
           at: workspace
+          
       - aws-cli/install
+      
       - aws-cli/configure:
           aws-access-key-id: "$AWS_ACCESS_KEY_ID"
           aws-region: "$AWS_DEFAULT_REGION"
+          
       - run:
           name: Load image
           command: |
