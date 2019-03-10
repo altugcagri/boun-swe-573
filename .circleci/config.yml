@@ -133,9 +133,9 @@ jobs:
             eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
             docker push $FULL_IMAGE_NAME
       - aws-ecs/update-service:
-          family: "${ECS_SERVICE_NAME}"
-          cluster-name: "${ECS_CLUSTER_NAME}"
-          container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
+          family: "smep"
+          cluster-name: "default"
+          container-image-name-updates: "container=smep,image-and-tag=${FULL_IMAGE_NAME}"
       - run:
           name: Test deployment (Please manually tear down AWS resources after use, if desired)
           command: |
