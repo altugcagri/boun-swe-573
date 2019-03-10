@@ -1,7 +1,3 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@0.1.4
@@ -9,29 +5,20 @@ orbs:
 jobs:
   test:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
     environment:
-      # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
     
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-{{ checksum "build.gradle" }
           - v1-dependencies-
           
       - run: chmod +x ./gradlew
@@ -43,11 +30,10 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
-      # run tests!
       - run: ./gradlew test
       
-      # run sonarqube!
       - run: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io  -Dsonar.login=${SONAR_LOGIN}
+  
   build:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -89,20 +75,25 @@ jobs:
           name: Build image
           command: |
             docker build -t $FULL_IMAGE_NAME .
+            
       - run:
           name: Save image to an archive
           command: |
             mkdir docker-image
             docker save -o docker-image/image.tar $FULL_IMAGE_NAME
+            
       - persist_to_workspace:
           root: .
           paths:
             - docker-image
+            
   deploy:  
     docker:
       - image: circleci/python:3.6.1
+      
     environment:
       AWS_DEFAULT_OUTPUT: json
+      
     steps:
       - checkout
       
@@ -121,27 +112,29 @@ jobs:
           name: Load image
           command: |
             docker load --input workspace/docker-image/image.tar
+            
       - run:
           name: Setup common environment variables
           command: |
             echo 'export ECS_CLUSTER_NAME="smep-cluster"' >> $BASH_ENV
             echo 'export ECS_SERVICE_NAME="smep-service"' >> $BASH_ENV
             echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"' >> $BASH_ENV
+      
       - run:
           name: Push image
           command: |
             eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
             docker push $FULL_IMAGE_NAME
+            
       - aws-ecs/update-service:
           family: "smep"
           cluster-name: "default"
           container-image-name-updates: "container=smep,image-and-tag=${FULL_IMAGE_NAME}"
-          container-env-var-updates: "container=smep,name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=smep,name=BUILD_DATE,value=\"$(date)\""
           verify-revision-is-deployed: true
     
 workflows:
  version: 2
- test-build:
+ test-build-deploy:
    jobs:
      - test
      - build:
