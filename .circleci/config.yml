@@ -3,6 +3,9 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+orbs:
+  aws-cli: circleci/aws-cli@0.1.4
+  aws-ecs: circleci/aws-ecs@0.0.3
 jobs:
   test:
     docker:
@@ -89,7 +92,51 @@ jobs:
           root: .
           paths:
             - docker-image
-            
+  deploy:  
+    docker:
+      - image: circleci/python:3.6.1
+    environment:
+      AWS_DEFAULT_OUTPUT: json
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: workspace
+      - aws-cli/install
+      - aws-cli/configure:
+          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+          aws-region: "$AWS_DEFAULT_REGION"
+      - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-image/image.tar
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECS_CLUSTER_NAME="${AWS_RESOURCE_NAME_PREFIX}-cluster"' >> $BASH_ENV
+            echo 'export ECS_SERVICE_NAME="${AWS_RESOURCE_NAME_PREFIX}-service"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"' >> $BASH_ENV
+      - run:
+          name: Push image
+          command: |
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            docker push $FULL_IMAGE_NAME
+      - aws-ecs/update-service:
+          family: "${ECS_SERVICE_NAME}"
+          cluster-name: "${ECS_CLUSTER_NAME}"
+          container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
+          container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
+          verify-revision-is-deployed: true
+      - run:
+          name: Test deployment (Please manually tear down AWS resources after use, if desired)
+          command: |
+            TARGET_GROUP_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME | jq -r '.services[0].loadBalancers[0].targetGroupArn')
+            ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
+            ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
+            # Test multiple times to verify that the new revision has been deployed across the entire cluster
+            for attempt in {1..50}; do
+              curl -s --retry 10 http://$ELB_DNS_NAME | grep -E "Hello World!.*${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM}"
+            done
 workflows:
  version: 2
  test-build:
@@ -98,3 +145,6 @@ workflows:
      - build:
          requires:
            - test
+     - deploy:
+         requires:
+           - build
