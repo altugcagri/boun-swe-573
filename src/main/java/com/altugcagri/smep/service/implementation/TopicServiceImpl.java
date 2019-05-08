@@ -5,7 +5,6 @@ import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.exception.ResourceNotFoundException;
 import com.altugcagri.smep.persistence.TopicRepository;
 import com.altugcagri.smep.persistence.UserRepository;
-import com.altugcagri.smep.persistence.model.Content;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.persistence.model.User;
 import com.altugcagri.smep.security.UserPrincipal;
@@ -63,21 +62,6 @@ public class TopicServiceImpl implements TopicService {
                 .buildAndExpand(topic.getId()).toUri();
 
         return ResponseEntity.created(location).body(createdTopic);
-    }
-
-    public ResponseEntity<ApiResponse> createContentByTopicId(UserPrincipal currentUser, Long topicId,
-            Content contentRequest) {
-        Topic topic = topicRepository.findById(topicId).orElse(null);
-
-        if (topic != null && currentUser.getId().equals(topic.getCreatedBy())) {
-            contentRequest.setTopic(topic);
-            topic.getContentList().add(contentRequest);
-            topicRepository.save(topic);
-
-            return ResponseEntity.ok().body(new ApiResponse(true, "Content created successfully"));
-        }
-
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to create content"));
     }
 
     public ResponseEntity<ApiResponse> deleteTopicById(Long topicId, UserPrincipal currentUser) {

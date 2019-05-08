@@ -1,14 +1,13 @@
 package com.altugcagri.smep.controller;
 
 
+import com.altugcagri.smep.controller.dto.request.ContentRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.ContentResponse;
-import com.altugcagri.smep.persistence.model.Question;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.ContentService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,23 +29,20 @@ public class ContentController {
         this.contentService = contentService;
     }
 
+    @PostMapping("/")
+    @Transactional
+    public ResponseEntity<ApiResponse> createContentByTopicId(@CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody ContentRequest contentRequest) {
+        return contentService.createContentByTopicId(currentUser, contentRequest);
+    }
+
     @GetMapping("/{contentId}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ContentResponse> getContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return contentService.getContentById(currentUser, contentId);
     }
 
-    @PostMapping("/{contentId}/questions")
-    @PreAuthorize("hasRole('USER')")
-    @Transactional
-    public ResponseEntity<?> createQuestionByContentId(@CurrentUser UserPrincipal currentUser,
-            @PathVariable Long contentId, @Valid @RequestBody Question questionRequest) {
-        return contentService.createQuestionByContentId(currentUser, contentId, questionRequest);
-    }
-
     @DeleteMapping("/{contentId}")
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     public ResponseEntity<ApiResponse> deleteContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {

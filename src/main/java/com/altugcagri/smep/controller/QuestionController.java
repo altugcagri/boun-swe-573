@@ -1,12 +1,11 @@
 package com.altugcagri.smep.controller;
 
+import com.altugcagri.smep.controller.dto.request.QuestionRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
-import com.altugcagri.smep.persistence.model.Choice;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.QuestionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,16 +26,15 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @PostMapping("/{questionId}/choices")
-    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/")
     @Transactional
-    public ResponseEntity<ApiResponse> createChoiceByQuestionId(@CurrentUser UserPrincipal currentUser,
-            @PathVariable Long questionId, @Valid @RequestBody Choice choiceRequest) {
-        return questionService.createChoiceByQuestionId(currentUser, questionId, choiceRequest);
+    public ResponseEntity<?> createQuestionByContentId(@CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody QuestionRequest questionRequest) {
+        return questionService.createQuestionByContentId(currentUser, questionRequest);
     }
 
+
     @DeleteMapping("/{questionId}")
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     public ResponseEntity<ApiResponse> deleteQuestionById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long questionId) {

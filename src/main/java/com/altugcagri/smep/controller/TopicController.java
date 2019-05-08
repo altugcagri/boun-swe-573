@@ -1,13 +1,11 @@
 package com.altugcagri.smep.controller;
 
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
-import com.altugcagri.smep.persistence.model.Content;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.TopicService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,15 +44,8 @@ public class TopicController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Topic> createTopic(@Valid @RequestBody Topic topicRequest) {
         return topicService.createTopic(topicRequest);
-    }
-
-    @PostMapping("/{topicId}/contents")
-    public ResponseEntity<ApiResponse> createContentByTopicId(@CurrentUser UserPrincipal currentUser,
-            @PathVariable Long topicId, @Valid @RequestBody Content contentRequest) {
-        return topicService.createContentByTopicId(currentUser, topicId, contentRequest);
     }
 
     @DeleteMapping("/topic/{topicId}")

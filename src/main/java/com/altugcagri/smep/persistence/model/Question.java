@@ -26,7 +26,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question extends UserCreatedDataBaseEntity{
+public class Question extends UserCreatedDataBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Question extends UserCreatedDataBaseEntity{
     @Size(max = 255)
     private String text;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<Choice> choiceList;
 
     @JsonIgnore

@@ -35,7 +35,7 @@ public class Choice extends UserCreatedDataBaseEntity{
     private String text;
 
     @NotNull
-    private Boolean isCorrect;
+    private Boolean correct;
 
     @JsonIgnore
     @ManyToOne
