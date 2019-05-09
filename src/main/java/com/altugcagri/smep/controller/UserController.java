@@ -1,12 +1,12 @@
 package com.altugcagri.smep.controller;
 
+import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.controller.dto.response.UserIdentityAvailability;
 import com.altugcagri.smep.controller.dto.response.UserProfile;
 import com.altugcagri.smep.controller.dto.response.UserSummary;
 import com.altugcagri.smep.exception.ResourceNotFoundException;
 import com.altugcagri.smep.persistence.TopicRepository;
 import com.altugcagri.smep.persistence.UserRepository;
-import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.persistence.model.User;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
@@ -36,33 +36,27 @@ public class UserController {
 
     @GetMapping("/user/me")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(),
-                currentUser.getName());
-        return userSummary;
+        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
     }
 
     @GetMapping("/user/checkUsernameAvailability")
     public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "email") String email) {
-        Boolean isAvailable = !userRepository.existsByEmail(email);
-        return new UserIdentityAvailability(isAvailable);
+        return new UserIdentityAvailability(!userRepository.existsByEmail(email));
     }
 
     @GetMapping("/users/{username}")
     public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
-        User user = userRepository.findByUsername(username)
+        final User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("UserEntity", "username", username));
 
-        long topicCount = topicRepository.countByCreatedBy(user.getId());
+        final long topicCount = topicRepository.countByCreatedBy(user.getId());
 
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(),
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(),
                 topicCount);
-
-        return userProfile;
     }
 
     @GetMapping("/users/{username}/topics")
-
-    public ResponseEntity<List<Topic>> getTopicsCreatedBy(@PathVariable(value = "username") String username,
+    public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(@PathVariable(value = "username") String username,
             @CurrentUser UserPrincipal currentUser) {
         return topicService.getTopicsCreatedBy(username, currentUser);
     }

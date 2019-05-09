@@ -14,5 +14,4 @@ import lombok.Setter;
 public class UserIdentityAvailability {
 
     private Boolean available;
-
 }

@@ -9,10 +9,13 @@ import com.altugcagri.smep.persistence.model.Choice;
 import com.altugcagri.smep.persistence.model.Question;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.ChoiceService;
+import com.altugcagri.smep.service.util.SmeptUtilities;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ChoiceServiceImpl implements ChoiceService {
 
@@ -32,26 +35,27 @@ public class ChoiceServiceImpl implements ChoiceService {
     @Override
     public ResponseEntity<ApiResponse> createChoiceByQuestionId(UserPrincipal currentUser,
             ChoiceRequest choiceRequest) {
-        Question question = questionRepository.findById(choiceRequest.getQuestionId()).orElseThrow(
-                () -> new ResourceNotFoundException("Question Not Found", "id", choiceRequest.getQuestionId()));
 
-        if (currentUser.getId().equals(question.getCreatedBy())) {
-            final Choice choice = smepConversionService.convert(choiceRequest, Choice.class);
-            choice.setQuestion(question);
-            choiceRepository.save(choice);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Choice created successfully"));
-        }
+        final Question question = questionRepository.findById(choiceRequest.getQuestionId()).orElseThrow(
+                () -> new ResourceNotFoundException("Question", "id", choiceRequest.getQuestionId().toString()));
 
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to create choice"));
+        SmeptUtilities.checkCreatedBy("Question", currentUser.getId(), question.getCreatedBy());
+
+        final Choice choice = smepConversionService.convert(choiceRequest, Choice.class);
+        choice.setQuestion(question);
+        choiceRepository.save(choice);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Choice created successfully"));
     }
 
     @Override
     public ResponseEntity<ApiResponse> deleteChoiceById(UserPrincipal currentUser, Long choiceId) {
-        Choice choice = choiceRepository.findById(choiceId).orElse(null);
-        if (choice != null && currentUser.getId().equals(choice.getCreatedBy())) {
-            choiceRepository.deleteById(choiceId);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Choice deleted successfully"));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to delete choice"));
+
+        final Choice choice = choiceRepository.findById(choiceId).orElseThrow(
+                () -> new ResourceNotFoundException("Choice", "id", choiceId.toString()));
+
+        SmeptUtilities.checkCreatedBy("Choice", currentUser.getId(), choice.getCreatedBy());
+
+        choiceRepository.delete(choice);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Choice deleted successfully"));
     }
 }

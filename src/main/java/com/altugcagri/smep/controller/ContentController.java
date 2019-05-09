@@ -7,6 +7,7 @@ import com.altugcagri.smep.controller.dto.response.ContentResponse;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.ContentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/contents")
 public class ContentController {
@@ -37,6 +39,7 @@ public class ContentController {
     }
 
     @GetMapping("/{contentId}")
+    @Transactional
     public ResponseEntity<ContentResponse> getContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return contentService.getContentById(currentUser, contentId);

@@ -10,10 +10,13 @@ import com.altugcagri.smep.persistence.model.Content;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.ContentService;
+import com.altugcagri.smep.service.util.SmeptUtilities;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ContentServiceImpl implements ContentService {
 
@@ -35,45 +38,37 @@ public class ContentServiceImpl implements ContentService {
             ContentRequest contentRequest) {
 
         final Topic topic = topicRepository.findById(contentRequest.getTopicId())
-                .orElseThrow(() -> new ResourceNotFoundException("TopicEntity", "id", contentRequest.getTopicId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Topic", "id", contentRequest.getTopicId().toString()));
 
-        if (currentUser.getId().equals(topic.getCreatedBy())) {
+        SmeptUtilities.checkCreatedBy("Topic", currentUser.getId(), topic.getCreatedBy());
 
-            Content content = smepConversionService.convert(contentRequest, Content.class);
-            content.setTopic(topic);
-            contentRepository.save(content);
-
-            return ResponseEntity.ok().body(new ApiResponse(true, "Content created successfully"));
-        }
-
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to create content"));
+        final Content content = smepConversionService.convert(contentRequest, Content.class);
+        content.setTopic(topic);
+        contentRepository.save(content);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Content created successfully"));
     }
 
     @Override
     public ResponseEntity<ContentResponse> getContentById(UserPrincipal currentUser, Long contentId) {
 
-        Content contentById = contentRepository.findById(contentId).orElse(null);
-        ContentResponse contentResponse = new ContentResponse();
-        contentResponse.setId(contentById.getId());
-        contentResponse.setTitle(contentById.getTitle());
-        contentResponse.setText(contentById.getText());
-        contentResponse.setTopicId(contentById.getTopic().getId());
+        final Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Content", "id", contentId.toString()));
 
-        if (contentById != null) {
-            return ResponseEntity.ok().body(contentResponse);
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok().body(smepConversionService.convert(content, ContentResponse.class));
     }
 
 
     @Override
     public ResponseEntity<ApiResponse> deleteContentById(UserPrincipal currentUser, Long contentId) {
-        Content content = contentRepository.findById(contentId).orElse(null);
-        if (content != null && currentUser.getId().equals(content.getCreatedBy())) {
-            contentRepository.deleteContentById(contentId);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Content deleted successfully"));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Content not found"));
+
+        final Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Content", "id", contentId.toString()));
+
+        SmeptUtilities.checkCreatedBy("Content", currentUser.getId(), content.getCreatedBy());
+
+        contentRepository.delete(content);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Content deleted successfully"));
     }
 
 }

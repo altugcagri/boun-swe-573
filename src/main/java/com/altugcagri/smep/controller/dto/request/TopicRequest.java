@@ -29,6 +29,9 @@ public class TopicRequest {
     private String description;
 
     @Nullable
+    private String imageUrl;
+
+    @Nullable
     private ArrayList<String> wikiData;
 
     @Nullable

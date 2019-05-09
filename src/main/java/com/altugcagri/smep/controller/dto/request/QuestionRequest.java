@@ -9,7 +9,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
 @Getter
 @Setter
 @Builder
@@ -18,7 +17,7 @@ import javax.validation.constraints.Size;
 public class QuestionRequest {
 
     @NotBlank
-    private long contentId;
+    private Long contentId;
 
     @NotBlank
     @Size(max = 255)

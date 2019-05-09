@@ -10,10 +10,13 @@ import com.altugcagri.smep.persistence.model.Content;
 import com.altugcagri.smep.persistence.model.Question;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.QuestionService;
+import com.altugcagri.smep.service.util.SmeptUtilities;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
@@ -35,41 +38,41 @@ public class QuestionServiceImpl implements QuestionService {
             QuestionRequest questionRequest) {
 
         final Content content = contentRepository.findById(questionRequest.getContentId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Content Not Found", "id", questionRequest.getContentId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Content", "id",
+                        questionRequest.getContentId().toString()));
 
-        if (currentUser.getId().equals(content.getCreatedBy())) {
-            final Question question = smepConversionService.convert(questionRequest, Question.class);
-            question.setContent(content);
-            questionRepository.save(question);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Question created successfully"));
-        }
+        SmeptUtilities.checkCreatedBy("Content", currentUser.getId(), content.getCreatedBy());
 
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to create question"));
-
+        final Question question = smepConversionService.convert(questionRequest, Question.class);
+        question.setContent(content);
+        questionRepository.save(question);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Question created successfully"));
     }
 
     @Override
     public ResponseEntity<ApiResponse> createChoiceByQuestionId(UserPrincipal currentUser, Long questionId,
             Choice choiceRequest) {
-        Question question = questionRepository.findById(questionId).orElse(null);
-        if (question != null && currentUser.getId().equals(question.getCreatedBy())) {
-            choiceRequest.setQuestion(question);
-            question.getChoiceList().add(choiceRequest);
-            questionRepository.save(question);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Choice created successfully"));
-        }
 
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to create choice"));
+        final Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId.toString()));
+
+        SmeptUtilities.checkCreatedBy("Question", currentUser.getId(), question.getCreatedBy());
+
+        choiceRequest.setQuestion(question);
+        question.getChoiceList().add(choiceRequest);
+        questionRepository.save(question);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Choice created successfully"));
     }
 
     @Override
     public ResponseEntity<ApiResponse> deleteQuestionById(Long questionId, UserPrincipal currentUser) {
-        Question question = questionRepository.findById(questionId).orElse(null);
-        if (question != null && currentUser.getId().equals(question.getCreatedBy())) {
-            questionRepository.deleteQuestionById(questionId);
-            return ResponseEntity.ok().body(new ApiResponse(true, "Question deleted successfully"));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to delete question"));
+
+        final Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId.toString()));
+
+        SmeptUtilities.checkCreatedBy("Question", currentUser.getId(), question.getCreatedBy());
+
+        questionRepository.delete(question);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Question deleted successfully"));
     }
 }

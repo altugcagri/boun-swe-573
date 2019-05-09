@@ -18,7 +18,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class ChoiceRequest {
 
-
     @NotBlank
     private Long questionId;
 

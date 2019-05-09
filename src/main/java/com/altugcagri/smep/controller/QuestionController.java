@@ -5,6 +5,7 @@ import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.QuestionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("api/questions")
 public class QuestionController {

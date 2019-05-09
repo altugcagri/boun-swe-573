@@ -24,6 +24,6 @@ public class ContentRequest {
     private String text;
 
     @NotBlank
-    private long topicId;
+    private Long topicId;
 
 }

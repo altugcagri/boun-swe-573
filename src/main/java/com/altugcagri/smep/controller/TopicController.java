@@ -1,10 +1,12 @@
 package com.altugcagri.smep.controller;
 
+import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
-import com.altugcagri.smep.persistence.model.Topic;
+import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.TopicService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/topics")
 public class TopicController {
@@ -28,23 +31,24 @@ public class TopicController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Topic>> getAllTopics(@CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<List<TopicResponse>> getAllTopics(@CurrentUser UserPrincipal currentUser) {
         return topicService.getAllTopics(currentUser);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<List<Topic>> getTopicsByUsername(@PathVariable String username,
+    public ResponseEntity<List<TopicResponse>> getTopicsByUsername(@PathVariable String username,
             @CurrentUser UserPrincipal currentUser) {
         return topicService.getTopicsCreatedBy(username, currentUser);
     }
 
     @GetMapping("/topic/{topicId}")
-    public ResponseEntity<Topic> getTopicById(@CurrentUser UserPrincipal currentUser, @PathVariable Long topicId) {
+    public ResponseEntity<TopicResponse> getTopicById(@CurrentUser UserPrincipal currentUser,
+            @PathVariable Long topicId) {
         return topicService.getTopicById(topicId, currentUser);
     }
 
     @PostMapping
-    public ResponseEntity<Topic> createTopic(@Valid @RequestBody Topic topicRequest) {
+    public ResponseEntity<TopicResponse> createTopic(@Valid @RequestBody TopicRequest topicRequest) {
         return topicService.createTopic(topicRequest);
     }
 
