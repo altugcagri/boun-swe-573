@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class ContentServiceImpl implements ContentService {
 
     private static final String TOPIC = "Topic";
+    private static final String CONTENT = "Content";
 
     private ContentRepository contentRepository;
 
@@ -55,7 +56,7 @@ public class ContentServiceImpl implements ContentService {
     public ResponseEntity<ContentResponse> getContentById(UserPrincipal currentUser, Long contentId) {
 
         final Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Content", "id", contentId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(CONTENT, "id", contentId.toString()));
 
         return ResponseEntity.ok().body(smepConversionService.convert(content, ContentResponse.class));
     }
@@ -65,9 +66,9 @@ public class ContentServiceImpl implements ContentService {
     public ResponseEntity<ApiResponse> deleteContentById(UserPrincipal currentUser, Long contentId) {
 
         final Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Content", "id", contentId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(CONTENT, "id", contentId.toString()));
 
-        SmeptUtilities.checkCreatedBy("Content", currentUser.getId(), content.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(CONTENT, currentUser.getId(), content.getCreatedBy());
 
         contentRepository.delete(content);
         return ResponseEntity.ok().body(new ApiResponse(true, "Content deleted successfully"));
