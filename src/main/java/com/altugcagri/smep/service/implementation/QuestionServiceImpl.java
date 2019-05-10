@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
+    private static final String CONTENT = "Content";
+    private static final String QUESTION = "Question";
+
     private QuestionRepository questionRepository;
 
     private ContentRepository contentRepository;
@@ -38,10 +41,10 @@ public class QuestionServiceImpl implements QuestionService {
             QuestionRequest questionRequest) {
 
         final Content content = contentRepository.findById(questionRequest.getContentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Content", "id",
+                .orElseThrow(() -> new ResourceNotFoundException(CONTENT, "id",
                         questionRequest.getContentId().toString()));
 
-        SmeptUtilities.checkCreatedBy("Content", currentUser.getId(), content.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(CONTENT, currentUser.getId(), content.getCreatedBy());
 
         final Question question = smepConversionService.convert(questionRequest, Question.class);
         question.setContent(content);
@@ -54,9 +57,9 @@ public class QuestionServiceImpl implements QuestionService {
             Choice choiceRequest) {
 
         final Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(QUESTION, "id", questionId.toString()));
 
-        SmeptUtilities.checkCreatedBy("Question", currentUser.getId(), question.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(QUESTION, currentUser.getId(), question.getCreatedBy());
 
         choiceRequest.setQuestion(question);
         question.getChoiceList().add(choiceRequest);
@@ -68,9 +71,9 @@ public class QuestionServiceImpl implements QuestionService {
     public ResponseEntity<ApiResponse> deleteQuestionById(Long questionId, UserPrincipal currentUser) {
 
         final Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(QUESTION, "id", questionId.toString()));
 
-        SmeptUtilities.checkCreatedBy("Question", currentUser.getId(), question.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(QUESTION, currentUser.getId(), question.getCreatedBy());
 
         questionRepository.delete(question);
         return ResponseEntity.ok().body(new ApiResponse(true, "Question deleted successfully"));

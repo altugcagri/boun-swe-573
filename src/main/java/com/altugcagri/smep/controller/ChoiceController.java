@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("api/choices")
+@RequestMapping(value = "api/choices")
 public class ChoiceController {
 
     private ChoiceService choiceService;
@@ -28,14 +28,14 @@ public class ChoiceController {
         this.choiceService = choiceService;
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/")
     @Transactional
     public ResponseEntity<ApiResponse> createChoiceByQuestionId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody ChoiceRequest choiceRequest) {
         return choiceService.createChoiceByQuestionId(currentUser, choiceRequest);
     }
 
-    @DeleteMapping("/{choiceId}")
+    @DeleteMapping(value = "/{choiceId}")
     @Transactional
     public ResponseEntity<ApiResponse> deleteChoiceById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long choiceId) {

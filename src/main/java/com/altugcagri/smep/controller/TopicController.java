@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/topics")
+@RequestMapping(value = "/api/topics")
 public class TopicController {
 
     private TopicService topicService;
@@ -35,24 +35,30 @@ public class TopicController {
         return topicService.getAllTopics(currentUser);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping(value = "/{username}")
     public ResponseEntity<List<TopicResponse>> getTopicsByUsername(@PathVariable String username,
             @CurrentUser UserPrincipal currentUser) {
         return topicService.getTopicsCreatedBy(username, currentUser);
     }
 
-    @GetMapping("/topic/{topicId}")
+    @GetMapping(value = "/topic/{topicId}")
     public ResponseEntity<TopicResponse> getTopicById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long topicId) {
         return topicService.getTopicById(topicId, currentUser);
     }
 
-    @PostMapping
+    @GetMapping(value = "/topic/{username}/")
+    public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(@PathVariable(value = "username") String username,
+            @CurrentUser UserPrincipal currentUser) {
+        return topicService.getTopicsCreatedBy(username, currentUser);
+    }
+
+    @PostMapping(value = "/")
     public ResponseEntity<TopicResponse> createTopic(@Valid @RequestBody TopicRequest topicRequest) {
         return topicService.createTopic(topicRequest);
     }
 
-    @DeleteMapping("/topic/{topicId}")
+    @DeleteMapping(value = "/topic/{topicId}")
     public ResponseEntity<ApiResponse> deleteTopicById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long topicId) {
         return topicService.deleteTopicById(topicId, currentUser);

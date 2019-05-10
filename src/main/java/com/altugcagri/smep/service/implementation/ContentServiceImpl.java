@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContentServiceImpl implements ContentService {
 
+    private static final String TOPIC = "Topic";
+
     private ContentRepository contentRepository;
 
     private TopicRepository topicRepository;
@@ -39,9 +41,9 @@ public class ContentServiceImpl implements ContentService {
 
         final Topic topic = topicRepository.findById(contentRequest.getTopicId())
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Topic", "id", contentRequest.getTopicId().toString()));
+                        () -> new ResourceNotFoundException(TOPIC, "id", contentRequest.getTopicId().toString()));
 
-        SmeptUtilities.checkCreatedBy("Topic", currentUser.getId(), topic.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(TOPIC, currentUser.getId(), topic.getCreatedBy());
 
         final Content content = smepConversionService.convert(contentRequest, Content.class);
         content.setTopic(topic);

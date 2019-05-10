@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/contents")
+@RequestMapping(value = "/api/contents")
 public class ContentController {
 
     private ContentService contentService;
@@ -31,21 +31,21 @@ public class ContentController {
         this.contentService = contentService;
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/")
     @Transactional
     public ResponseEntity<ApiResponse> createContentByTopicId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody ContentRequest contentRequest) {
         return contentService.createContentByTopicId(currentUser, contentRequest);
     }
 
-    @GetMapping("/{contentId}")
+    @GetMapping(value = "/{contentId}")
     @Transactional
     public ResponseEntity<ContentResponse> getContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return contentService.getContentById(currentUser, contentId);
     }
 
-    @DeleteMapping("/{contentId}")
+    @DeleteMapping(value = "/{contentId}")
     @Transactional
     public ResponseEntity<ApiResponse> deleteContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {

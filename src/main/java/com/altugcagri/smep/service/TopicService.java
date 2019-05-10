@@ -3,7 +3,6 @@ package com.altugcagri.smep.service;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
-import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.security.UserPrincipal;
 import org.springframework.http.ResponseEntity;
 

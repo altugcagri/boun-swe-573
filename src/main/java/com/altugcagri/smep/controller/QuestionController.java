@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("api/questions")
+@RequestMapping(value = "api/questions")
 public class QuestionController {
 
     private QuestionService questionService;
@@ -28,9 +28,9 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/")
     @Transactional
-    public ResponseEntity<?> createQuestionByContentId(@CurrentUser UserPrincipal currentUser,
+    public ResponseEntity<ApiResponse> createQuestionByContentId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody QuestionRequest questionRequest) {
         return questionService.createQuestionByContentId(currentUser, questionRequest);
     }

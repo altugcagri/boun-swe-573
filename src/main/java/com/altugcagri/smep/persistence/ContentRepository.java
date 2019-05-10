@@ -1,6 +1,5 @@
 package com.altugcagri.smep.persistence;
 
-
 import com.altugcagri.smep.persistence.model.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,5 @@
 package com.altugcagri.smep.controller;
 
-import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.controller.dto.response.UserIdentityAvailability;
 import com.altugcagri.smep.controller.dto.response.UserProfile;
 import com.altugcagri.smep.controller.dto.response.UserSummary;
@@ -10,19 +9,15 @@ import com.altugcagri.smep.persistence.UserRepository;
 import com.altugcagri.smep.persistence.model.User;
 import com.altugcagri.smep.security.CurrentUser;
 import com.altugcagri.smep.security.UserPrincipal;
-import com.altugcagri.smep.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api")
 public class UserController {
 
     @Autowired
@@ -31,20 +26,17 @@ public class UserController {
     @Autowired
     private TopicRepository topicRepository;
 
-    @Autowired
-    private TopicService topicService;
-
-    @GetMapping("/user/me")
+    @GetMapping(value = "/user/me")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
     }
 
-    @GetMapping("/user/checkUsernameAvailability")
+    @GetMapping(value = "/user/checkUsernameAvailability")
     public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "email") String email) {
         return new UserIdentityAvailability(!userRepository.existsByEmail(email));
     }
 
-    @GetMapping("/users/{username}")
+    @GetMapping(value = "/users/{username}")
     public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
         final User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("UserEntity", "username", username));
@@ -53,12 +45,6 @@ public class UserController {
 
         return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(),
                 topicCount);
-    }
-
-    @GetMapping("/users/{username}/topics")
-    public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(@PathVariable(value = "username") String username,
-            @CurrentUser UserPrincipal currentUser) {
-        return topicService.getTopicsCreatedBy(username, currentUser);
     }
 
 }
