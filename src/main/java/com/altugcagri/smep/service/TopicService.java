@@ -1,5 +1,6 @@
 package com.altugcagri.smep.service;
 
+import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
@@ -19,4 +20,8 @@ public interface TopicService {
     ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest);
 
     ResponseEntity<ApiResponse> deleteTopicById(Long topicId, UserPrincipal currentUser);
+
+    ResponseEntity<ApiResponse> enrollToTopicByUsername(UserPrincipal currentUser, EnrollmentRequest enrollmentRequest);
+
+    ResponseEntity<List<TopicResponse>> getTopicsByEnrolledUserId(UserPrincipal currentUser, Long userId);
 }

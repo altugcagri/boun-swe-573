@@ -1,5 +1,6 @@
 package com.altugcagri.smep.controller;
 
+import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
@@ -56,5 +57,17 @@ public class TopicController {
     public ResponseEntity<ApiResponse> deleteTopicById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long topicId) {
         return topicService.deleteTopicById(topicId, currentUser);
+    }
+
+    @PostMapping("/enroll")
+    public ResponseEntity<ApiResponse> enrollToTopicByUsername(@CurrentUser UserPrincipal currentUser,
+            @RequestBody EnrollmentRequest enrollmentRequest) {
+        return topicService.enrollToTopicByUsername(currentUser, enrollmentRequest);
+    }
+
+    @GetMapping("/enrolled/{userId}")
+    public ResponseEntity<List<TopicResponse>> getEnrolledTopics(@CurrentUser UserPrincipal currentUser,
+            @PathVariable Long userId) {
+        return topicService.getTopicsByEnrolledUserId(currentUser, userId);
     }
 }

@@ -1,6 +1,7 @@
 package com.altugcagri.smep.service.implementation;
 
 
+import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
@@ -39,12 +40,14 @@ public class TopicServiceImpl implements TopicService {
         this.smepConversionService = smepConversionService;
     }
 
+    @Override
     public ResponseEntity<List<TopicResponse>> getAllTopics(UserPrincipal currentUser) {
         return ResponseEntity.ok().body(topicRepository.findAll().stream()
                 .map(topic -> smepConversionService.convert(topic, TopicResponse.class)).collect(
                         Collectors.toList()));
     }
 
+    @Override
     public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(String username, UserPrincipal currentUser) {
         final User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("UserEntity", "username", username));
@@ -54,6 +57,7 @@ public class TopicServiceImpl implements TopicService {
                         Collectors.toList()));
     }
 
+    @Override
     public ResponseEntity<TopicResponse> getTopicById(Long topicId, UserPrincipal currentUser) {
         final Topic topic = topicRepository.findById(topicId).orElseThrow(
                 () -> new ResourceNotFoundException("TopicEntity", "id", topicId.toString()));
@@ -61,6 +65,7 @@ public class TopicServiceImpl implements TopicService {
         return ResponseEntity.ok().body(smepConversionService.convert(topic, TopicResponse.class));
     }
 
+    @Override
     public ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest) {
 
         topicRepository.findById(topicRequest.getId())
@@ -73,7 +78,7 @@ public class TopicServiceImpl implements TopicService {
         return ResponseEntity.created(location).body(smepConversionService.convert(topic, TopicResponse.class));
     }
 
-
+    @Override
     public ResponseEntity<ApiResponse> deleteTopicById(Long topicId, UserPrincipal currentUser) {
         final Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Topic", "id", topicId.toString()));
@@ -82,5 +87,30 @@ public class TopicServiceImpl implements TopicService {
 
         topicRepository.delete(topic);
         return ResponseEntity.ok().body(new ApiResponse(true, "Topic deleted"));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> enrollToTopicByUsername(UserPrincipal currentUser,
+            EnrollmentRequest enrollmentRequest) {
+        final Topic topic = topicRepository.findById(enrollmentRequest.getTopicId())
+                .orElseThrow(() -> new ResourceNotFoundException("Topic", "topicId",
+                        enrollmentRequest.getTopicId().toString()));
+        final User user = userRepository.findByUsername(enrollmentRequest.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", enrollmentRequest.getUsername()));
+        topic.getEnrolledUsers().add(user);
+        topicRepository.save(topic);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Enrolled to topic successfully"));
+
+    }
+
+    @Override
+    public ResponseEntity<List<TopicResponse>> getTopicsByEnrolledUserId(UserPrincipal currentUser, Long userId) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
+        final List<Topic> enrolledTopics = topicRepository.findTopicByEnrolledUsersContains(user);
+
+        return ResponseEntity.ok()
+                .body(enrolledTopics.stream().map(topic -> smepConversionService.convert(topic, TopicResponse.class))
+                        .collect(Collectors.toList()));
     }
 }
