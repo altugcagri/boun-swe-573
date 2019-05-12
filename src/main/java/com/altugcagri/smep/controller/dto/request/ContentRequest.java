@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -23,7 +24,7 @@ public class ContentRequest {
     @Size(max = 1000)
     private String text;
 
-    @NotBlank
+    @NonNull
     private Long topicId;
 
 }

@@ -47,13 +47,7 @@ public class TopicController {
         return topicService.getTopicById(topicId, currentUser);
     }
 
-    @GetMapping(value = "/topic/{username}/")
-    public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(@PathVariable(value = "username") String username,
-            @CurrentUser UserPrincipal currentUser) {
-        return topicService.getTopicsCreatedBy(username, currentUser);
-    }
-
-    @PostMapping(value = "/")
+    @PostMapping
     public ResponseEntity<TopicResponse> createTopic(@Valid @RequestBody TopicRequest topicRequest) {
         return topicService.createTopic(topicRequest);
     }

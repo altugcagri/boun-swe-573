@@ -1,6 +1,7 @@
 package com.altugcagri.smep.controller.dto.request;
 
 import com.altugcagri.smep.persistence.model.Content;
+import com.altugcagri.smep.persistence.model.WikiData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +11,8 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,6 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TopicRequest {
+
+
+    private Long id = 0L;
 
     @NotBlank
     @Size(max = 150)
@@ -32,7 +36,7 @@ public class TopicRequest {
     private String imageUrl;
 
     @Nullable
-    private ArrayList<String> wikiData;
+    private Set<WikiData> wikiData;
 
     @Nullable
     private List<Content> contentList;

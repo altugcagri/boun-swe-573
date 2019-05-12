@@ -8,11 +8,18 @@ public class TopicRequestToTopic implements Converter<TopicRequest, Topic> {
 
     @Override
     public Topic convert(TopicRequest source) {
-        return Topic.builder()
+
+        final Topic topic = Topic.builder()
                 .title(source.getTitle())
                 .description(source.getDescription())
-                .imageUrl(source.getImageUrl())
                 .wikiData(source.getWikiData())
+                .imageUrl(source.getImageUrl())
                 .build();
+
+        if (source.getId() != 0L) {
+            topic.setId(source.getId());
+        }
+
+        return topic;
     }
 }

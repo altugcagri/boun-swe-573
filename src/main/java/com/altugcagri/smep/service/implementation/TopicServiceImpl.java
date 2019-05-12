@@ -62,6 +62,10 @@ public class TopicServiceImpl implements TopicService {
     }
 
     public ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest) {
+
+        topicRepository.findById(topicRequest.getId())
+                .ifPresent(topic -> topicRequest.setWikiData(topic.getWikiData()));
+
         final Topic topic = topicRepository.save(smepConversionService.convert(topicRequest, Topic.class));
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{topicId}")
                 .buildAndExpand(topic.getId()).toUri();
