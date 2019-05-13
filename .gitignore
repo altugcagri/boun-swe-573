@@ -25,3 +25,16 @@ HELP.md
 /dist/
 /nbdist/
 /.nb-gradle/
+
+
+### VS Code ###
+**/.vscode/
+
+# dependencies
+**/web/node_modules
+
+# production
+**/web/build
+
+# misc
+**/.DS_Store

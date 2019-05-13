@@ -17,14 +17,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class ContentRequest {
 
+    @NonNull
+    private Long id = 0L;
+
+    @NonNull
+    private Long topicId;
+
     @NotBlank
     private String title;
 
     @NotBlank
     @Size(max = 1000)
     private String text;
-
-    @NonNull
-    private Long topicId;
-
 }

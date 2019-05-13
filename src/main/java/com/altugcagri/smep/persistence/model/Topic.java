@@ -51,7 +51,7 @@ public class Topic extends UserCreatedDataBaseEntity {
     private List<Content> contentList;
 
     @Nullable
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "topic_wikidata",
             joinColumns = @JoinColumn(name = "topic_id"),

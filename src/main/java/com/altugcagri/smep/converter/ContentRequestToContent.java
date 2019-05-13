@@ -8,9 +8,15 @@ public class ContentRequestToContent implements Converter<ContentRequest, Conten
 
     @Override
     public Content convert(ContentRequest source) {
-        return Content.builder()
+        final Content content = Content.builder()
                 .title(source.getTitle())
                 .text(source.getText())
                 .build();
+
+        if (source.getId() != 0L) {
+            content.setId(source.getId());
+        }
+
+        return content;
     }
 }
