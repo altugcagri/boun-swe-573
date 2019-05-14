@@ -115,7 +115,7 @@ jobs:
              - ./web/node_modules
       - run:
           name: build-web
-          command: cd ./web && npm run build
+          command: CI=true && cd ./web && npm run build
 
   deploy:  
     docker:
