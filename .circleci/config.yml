@@ -105,6 +105,18 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "web/package.json" }}
 
+      - run:
+          name: install-npm
+          command: npm install ./web
+
+      - save_cache:
+           key: dependency-cache-{{ checksum "web/package.json" }}
+           paths:
+             - ./web/node_modules
+      - run:
+          name: build-web
+          command: npm --prefix ./web run build
+
   deploy:  
     docker:
       - image: circleci/python:3.6.1
