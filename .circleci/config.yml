@@ -103,7 +103,7 @@ jobs:
           command: 'sudo npm install -g npm@latest'
 
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "web/package.json" }}
 
   deploy:  
     docker:
