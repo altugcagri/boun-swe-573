@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,7 +52,7 @@ public class Topic extends UserCreatedDataBaseEntity {
     private List<Content> contentList;
 
     @Nullable
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "topic_wikidata",
             joinColumns = @JoinColumn(name = "topic_id"),
