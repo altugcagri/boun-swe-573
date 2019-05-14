@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class TopicServiceImpl implements TopicService {
 
+    private static final String TOPIC = "Topic";
     private TopicRepository topicRepository;
 
     private UserRepository userRepository;
@@ -50,7 +51,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public ResponseEntity<List<TopicResponse>> getTopicsCreatedBy(String username, UserPrincipal currentUser) {
         final User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("UserEntity", "username", username));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         return ResponseEntity.ok().body(topicRepository.findByCreatedBy(user.getId()).stream()
                 .map(topic -> smepConversionService.convert(topic, TopicResponse.class)).collect(
@@ -60,7 +61,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public ResponseEntity<TopicResponse> getTopicById(Long topicId, UserPrincipal currentUser) {
         final Topic topic = topicRepository.findById(topicId).orElseThrow(
-                () -> new ResourceNotFoundException("TopicEntity", "id", topicId.toString()));
+                () -> new ResourceNotFoundException(TOPIC, "id", topicId.toString()));
 
         return ResponseEntity.ok().body(smepConversionService.convert(topic, TopicResponse.class));
     }
@@ -81,9 +82,9 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public ResponseEntity<ApiResponse> deleteTopicById(Long topicId, UserPrincipal currentUser) {
         final Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new ResourceNotFoundException("Topic", "id", topicId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(TOPIC, "id", topicId.toString()));
 
-        SmeptUtilities.checkCreatedBy("Topic", currentUser.getId(), topic.getCreatedBy());
+        SmeptUtilities.checkCreatedBy(TOPIC, currentUser.getId(), topic.getCreatedBy());
 
         topicRepository.delete(topic);
         return ResponseEntity.ok().body(new ApiResponse(true, "Topic deleted"));
@@ -93,7 +94,7 @@ public class TopicServiceImpl implements TopicService {
     public ResponseEntity<ApiResponse> enrollToTopicByUsername(UserPrincipal currentUser,
             EnrollmentRequest enrollmentRequest) {
         final Topic topic = topicRepository.findById(enrollmentRequest.getTopicId())
-                .orElseThrow(() -> new ResourceNotFoundException("Topic", "topicId",
+                .orElseThrow(() -> new ResourceNotFoundException(TOPIC, "topicId",
                         enrollmentRequest.getTopicId().toString()));
         final User user = userRepository.findByUsername(enrollmentRequest.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", enrollmentRequest.getUsername()));
