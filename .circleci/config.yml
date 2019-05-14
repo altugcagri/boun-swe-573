@@ -107,7 +107,7 @@ jobs:
 
       - run:
           name: install-npm
-          command: npm install ./web
+          command: npm install /web
 
       - save_cache:
            key: dependency-cache-{{ checksum "web/package.json" }}
