@@ -126,7 +126,7 @@ jobs:
       - run:
           name: Build image
           command: |
-            docker build -f WebDockerfile -t $FULL_WEB_IMAGE_NAME .
+            docker build -f ~/repo/WebDockerfile -t $FULL_WEB_IMAGE_NAME .
 
       - run:
           name: Save image to an archive
