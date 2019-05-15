@@ -224,6 +224,13 @@ jobs:
           command: |
             eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
             docker push $FULL_WEB_IMAGE_NAME
+
+      - aws-ecs/update-service:
+          family: "smep-web"
+          cluster-name: "default"
+          container-image-name-updates: "container=smep-web-service,image-and-tag=${$FULL_WEB_IMAGE_NAME}"
+          verify-revision-is-deployed: true
+          
 workflows:
  version: 2
  test-build-deploy:
