@@ -29,7 +29,7 @@ public class UserPrincipal implements UserDetails {
     private String password;
 
 
-    static UserPrincipal create(User user) {
+    public static UserPrincipal create(User user) {
         return new UserPrincipal(user.getId(), user.getName(), user.getUsername(), user.getEmail(), user.getPassword());
     }
 
