@@ -238,26 +238,26 @@ workflows:
      - test:
          filters:
            branches:
-             only: dev
+             only: backend-master
      - build-backend:
          requires:
            - test
          filters:
            branches:
-             only: dev
+             only: backend-master
      - build-frontend:
          filters:
            branches:
-             only: web
+             only: web-master
      - deploy-backend:
          requires:
            - build-backend
          filters:
            branches:
-             only: dev
+             only: backend-master
      - deploy-frontend:
          requires:
            - build-frontend
          filters:
            branches:
-             only: web
+             only: web-master
