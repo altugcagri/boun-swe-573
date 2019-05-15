@@ -98,6 +98,8 @@ jobs:
 
       - checkout
 
+      - setup_remote_docker
+      
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
@@ -126,7 +128,7 @@ jobs:
       - run:
           name: Build image
           command: |
-            docker build -f ~/repo/WebDockerfile -t $FULL_WEB_IMAGE_NAME .
+            docker build -t $FULL_WEB_IMAGE_NAME -f ~/repo/WebDockerfile .
 
       - run:
           name: Save image to an archive
