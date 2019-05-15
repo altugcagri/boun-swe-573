@@ -235,16 +235,29 @@ workflows:
  version: 2
  test-build-deploy:
    jobs:
-     - test
+     - test:
+         filters:
+           branches:
+             only: dev
      - build-backend:
          requires:
            - test
+         filters:
+           branches:
+             only: dev
      - build-frontend:
-         requires:
-           - test
+         filters:
+           branches:
+             only: web
      - deploy-backend:
          requires:
            - build-backend
+         filters:
+           branches:
+             only: dev
      - deploy-frontend:
          requires:
            - build-frontend
+         filters:
+           branches:
+             only: web
