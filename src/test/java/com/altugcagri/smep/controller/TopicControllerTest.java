@@ -2,15 +2,10 @@ package com.altugcagri.smep.controller;
 
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
-import com.altugcagri.smep.persistence.model.User;
-import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.TopicService;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,24 +13,13 @@ import java.util.HashSet;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TopicControllerTest {
+public class TopicControllerTest extends AbstractEntityControllerTest {
 
     @Mock
     private TopicService topicService;
 
     @InjectMocks
-    private TopicController sut = new TopicController(topicService);
-
-    private static UserPrincipal currentUser;
-
-    @BeforeClass
-    public static void setUp() {
-        currentUser = UserPrincipal
-                .create(User.builder().name("name").username("username").email("email").id(0L).password("pass")
-                        .answeredChoices(new HashSet<>()).enrolledTopics(new HashSet<>()).build());
-    }
-
+    private final TopicController sut = new TopicController(topicService);
 
     @Test
     public void testGetAllTopics() {

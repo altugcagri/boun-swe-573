@@ -1,38 +1,21 @@
 package com.altugcagri.smep.controller;
 
 import com.altugcagri.smep.controller.dto.request.QuestionRequest;
-import com.altugcagri.smep.persistence.model.User;
-import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.QuestionService;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.HashSet;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-public class QuestionControllerTest {
+public class QuestionControllerTest extends AbstractEntityControllerTest {
 
     @Mock
     private QuestionService questionService;
 
     @InjectMocks
-    private QuestionController sut = new QuestionController(questionService);
-
-    private static UserPrincipal currentUser;
-
-    @BeforeClass
-    public static void setUp() {
-        currentUser = UserPrincipal
-                .create(User.builder().name("name").username("username").email("email").id(0L).password("pass")
-                        .answeredChoices(new HashSet<>()).enrolledTopics(new HashSet<>()).build());
-    }
+    private final QuestionController sut = new QuestionController(questionService);
 
     @Test
     public void testCreateQuestionByContentId() {
