@@ -228,7 +228,7 @@ jobs:
       - aws-ecs/update-service:
           family: "smep-web"
           cluster-name: "default"
-          container-image-name-updates: "container=smep-web,image-and-tag=${$FULL_WEB_IMAGE_NAME}"
+          container-image-name-updates: "container=smep-web,image-and-tag=${FULL_WEB_IMAGE_NAME}"
           verify-revision-is-deployed: true
 
 workflows:
