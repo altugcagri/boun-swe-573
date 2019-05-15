@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/swe-573.iml" filepath="$PROJECT_DIR$/.idea/swe-573.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.altugcagri.smep.iml" filepath="$PROJECT_DIR$/.idea/modules/com.altugcagri.smep.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.altugcagri.smep_main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.altugcagri.smep_main.iml" group="com.altugcagri.smep" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.altugcagri.smep_test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.altugcagri.smep_test.iml" group="com.altugcagri.smep" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,8 @@
+FROM node:12-alpine
+MAINTAINER cagri.altug
+COPY /web/build /usr/app/build
+WORKDIR /usr/app/
+EXPOSE 5000:5000
+RUN npm install --silent
+RUN npm install -g serve --silent
+CMD ["serve","-s","build"]

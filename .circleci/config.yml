@@ -1,0 +1,263 @@
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.4
+  aws-ecs: circleci/aws-ecs@0.0.3
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    working_directory: ~/repo
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-
+          
+      - run: chmod +x ./gradlew
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+        
+      - run: ./gradlew test
+      
+      - run: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io  -Dsonar.login=${SONAR_LOGIN}
+  
+  build-backend:
+    docker:
+      - image: circleci/openjdk:8-jdk
+      
+    working_directory: ~/repo
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      
+    steps:
+      - checkout
+      
+      - setup_remote_docker
+      
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-
+          
+      - run: chmod +x ./gradlew
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: ./gradlew build
+      
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1}"' >> $BASH_ENV
+      
+      - run:
+          name: Build image
+          command: |
+            docker build -t $FULL_IMAGE_NAME .
+            
+      - run:
+          name: Save image to an archive
+          command: |
+            mkdir docker-image
+            docker save -o docker-image/image.tar $FULL_IMAGE_NAME
+            
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-image
+
+  build-frontend:
+
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo
+
+    steps:
+
+      - checkout
+
+      - setup_remote_docker
+
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+
+      - restore_cache:
+          key: dependency-cache-{{ checksum "web/package.json" }}
+
+      - run:
+          name: install-npm
+          command: cd ./web && npm install
+
+      - save_cache:
+           key: dependency-cache-{{ checksum "web/package.json" }}
+           paths:
+             - ./web/node_modules
+      - run:
+          name: build-web
+          command: CI=false && cd ./web && npm run build
+
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECR_WEB_REPOSITORY_NAME="${AWS_WEB_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+            echo 'export FULL_WEB_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_WEB_REPOSITORY_NAME}:${CIRCLE_SHA1}"' >> $BASH_ENV
+
+      - run:
+          name: Build image
+          command: |
+            docker build -t $FULL_WEB_IMAGE_NAME -f ~/repo/WebDockerfile .
+
+      - run:
+          name: Save image to an archive
+          command: |
+            mkdir docker-web-image
+            docker save -o docker-web-image/image.tar $FULL_WEB_IMAGE_NAME
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-web-image
+
+  deploy-backend:
+    docker:
+      - image: circleci/python:3.6.1
+      
+    environment:
+      AWS_DEFAULT_OUTPUT: json
+      
+    steps:
+      - checkout
+      
+      - setup_remote_docker
+      
+      - attach_workspace:
+          at: workspace
+          
+      - aws-cli/install
+      
+      - aws-cli/configure:
+          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+          aws-region: "$AWS_DEFAULT_REGION"
+          
+      - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-image/image.tar
+            
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECS_CLUSTER_NAME="smep-cluster"' >> $BASH_ENV
+            echo 'export ECS_SERVICE_NAME="smep-service"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"' >> $BASH_ENV
+      
+      - run:
+          name: Push image
+          command: |
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            docker push $FULL_IMAGE_NAME
+            
+      - aws-ecs/update-service:
+          family: "smep"
+          cluster-name: "default"
+          container-image-name-updates: "container=smep-service,image-and-tag=${FULL_IMAGE_NAME}"
+          verify-revision-is-deployed: true
+
+  deploy-frontend:
+    docker:
+      - image: circleci/python:3.6.1
+
+    environment:
+      AWS_DEFAULT_OUTPUT: json
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - attach_workspace:
+          at: workspace
+
+      - aws-cli/install
+
+      - aws-cli/configure:
+          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+          aws-region: "$AWS_DEFAULT_REGION"
+
+      - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-web-image/image.tar
+
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECS_CLUSTER_NAME="smep-cluster"' >> $BASH_ENV
+            echo 'export ECS_SERVICE_NAME="smep-service"' >> $BASH_ENV
+            echo 'export FULL_WEB_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_WEB_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"' >> $BASH_ENV
+
+      - run:
+          name: Push image
+          command: |
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            docker push $FULL_WEB_IMAGE_NAME
+
+      - aws-ecs/update-service:
+          family: "smep-web"
+          cluster-name: "default"
+          container-image-name-updates: "container=smep-web,image-and-tag=${FULL_WEB_IMAGE_NAME}"
+          verify-revision-is-deployed: true
+
+workflows:
+ version: 2
+ test-build-deploy:
+   jobs:
+     - test:
+         filters:
+           branches:
+             only: backend-master
+     - build-backend:
+         requires:
+           - test
+         filters:
+           branches:
+             only: backend-master
+     - build-frontend:
+         filters:
+           branches:
+             only: web-master
+     - deploy-backend:
+         requires:
+           - build-backend
+         filters:
+           branches:
+             only: backend-master
+     - deploy-frontend:
+         requires:
+           - build-frontend
+         filters:
+           branches:
+             only: web-master
