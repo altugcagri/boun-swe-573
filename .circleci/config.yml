@@ -99,7 +99,7 @@ jobs:
       - checkout
 
       - setup_remote_docker
-      
+
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
@@ -134,7 +134,7 @@ jobs:
           name: Save image to an archive
           command: |
             mkdir docker-web-image
-            docker save -o docker-image/image.tar FULL_WEB_IMAGE_NAME
+            docker save -o docker-web-image/image.tar $FULL_WEB_IMAGE_NAME
 
       - persist_to_workspace:
           root: .
