@@ -167,7 +167,7 @@ code {
     margin-bottom: 20px;
     border-radius: 0 !important;
 }
-.list-group-item:after{
+/* .list-group-item:after{
     height: 20px;
     display: block;
     content: "";
@@ -176,7 +176,7 @@ code {
     left: 20%;
     width: 1px;
     background: #cdcdcd;
-}
+} */
 .list-group-item svg{
     float: right;
     margin-top: 4px;
@@ -393,3 +393,15 @@ code {
     
 }
 
+.list-group-item.list-group-item-action.active a{
+    color: white !important;
+}
+
+.list-group-item.list-group-item-action a{
+    color: #212529 !important;
+    display: block; 
+}
+
+.list-group-item.list-group-item-action a:hover{
+    text-decoration: none;
+}

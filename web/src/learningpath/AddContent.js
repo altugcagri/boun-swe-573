@@ -51,7 +51,7 @@ const AddContent = (props) => (
                                         text: values.text
                                     };
 
-                                    createContent(newContent)
+                                    createContent(newContent, topicId)
                                         .then(res => {
                                             toast.notify("Content created successfully.", { position: "top-right" });
                                             props.history.push(`/topic/${topicId}`);

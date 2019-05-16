@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
-import {Row, InputGroup, Button} from 'react-bootstrap';
+import { Row, InputGroup } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
-import { API_BASE_URL } from '../constants';
 import PageHeader from "../components/PageHeader";
 import { WikiLabels } from "../components/Wiki";
 import axios from 'axios';
+import { resolveEndpoint } from "../util/Helpers";
+import Loading from '../components/Loading';
 
 class Glossary extends Component {
     constructor(props) {
         super(props);
         this.state = {
             topics: [],
-            input: ''
+            input: '',
+            loading: true
         };
         this.loadTopicList = this.loadTopicList.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
     }
 
     loadTopicList() {
-        let url = API_BASE_URL + "/topics";
+        let url = resolveEndpoint('getAllTopics', []);
 
         axios.get(url).then(res => {
             this.setState({
-                topics: res.data
+                topics: res.data,
+                loading: false
             })
         }).catch(err => {
             console.log(err)

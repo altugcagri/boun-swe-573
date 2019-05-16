@@ -40,7 +40,7 @@ function OptionModal(FieldProps) {
                                     text: values.text,
                                     correct: values.isCorrect
                                 };
-                                createOption(newOption)
+                                createOption(newOption, FieldProps.questionId)
                                     .then(res => {
                                         toast.notify("Option created successfully.", { position: "top-right" });
                                         setModalState(false)
