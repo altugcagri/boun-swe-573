@@ -13,7 +13,7 @@ public class ContentRequestToContent implements Converter<ContentRequest, Conten
                 .text(source.getText())
                 .build();
 
-        if (source.getId() != 0L) {
+        if (source.getId() != null) {
             content.setId(source.getId());
         }
 

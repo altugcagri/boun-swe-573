@@ -75,9 +75,6 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest) {
 
-        topicRepository.findById(topicRequest.getId())
-                .ifPresent(topic -> topicRequest.setWikiData(topic.getWikiDataSet()));
-
         final List<WikiData> nonExistWikiDataSet =
                 topicRequest.getWikiData() != null ? topicRequest.getWikiData().stream()
                         .filter(wikiData -> !wikiDataRepository.existsById(wikiData.getId()))
