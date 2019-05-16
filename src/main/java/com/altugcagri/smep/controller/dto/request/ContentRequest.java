@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 public class ContentRequest {
 
     @NonNull
-    private Long id = 0L;
+    private Long id;
 
     @NonNull
     private Long topicId;
