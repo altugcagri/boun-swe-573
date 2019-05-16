@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource({"classpath:application.properties", "classpath:application-db-dev.properties"})
+@PropertySource({"classpath:application.properties", "classpath:application-db-dev.properties",
+        "classpath:application-db-prod.properties"})
 public class Application {
 
     public static void main(String[] args) {
