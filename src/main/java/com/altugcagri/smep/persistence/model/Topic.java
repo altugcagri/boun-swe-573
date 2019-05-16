@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -35,15 +36,16 @@ public class Topic extends UserCreatedDataBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @NotBlank
-    @Size(max = 150)
     private String title;
 
+    @Lob
     @NotBlank
-    @Size(max = 255)
     private String description;
 
-    @Nullable
+    @Lob
+    @NotBlank
     private String imageUrl;
 
     @Nullable
@@ -51,12 +53,12 @@ public class Topic extends UserCreatedDataBaseEntity {
     private List<Content> contentList;
 
     @Nullable
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "topic_wikidata",
             joinColumns = @JoinColumn(name = "topic_id"),
             inverseJoinColumns = @JoinColumn(name = "wikidata_id"))
-    private Set<WikiData> wikiData;
+    private Set<WikiData> wikiDataSet;
 
     @Nullable
     @ManyToMany

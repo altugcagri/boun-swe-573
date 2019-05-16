@@ -8,8 +8,10 @@ import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.exception.ResourceNotFoundException;
 import com.altugcagri.smep.persistence.TopicRepository;
 import com.altugcagri.smep.persistence.UserRepository;
+import com.altugcagri.smep.persistence.WikiDataRepository;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.persistence.model.User;
+import com.altugcagri.smep.persistence.model.WikiData;
 import com.altugcagri.smep.security.UserPrincipal;
 import com.altugcagri.smep.service.TopicService;
 import com.altugcagri.smep.service.util.SmeptUtilities;
@@ -28,17 +30,21 @@ import java.util.stream.Collectors;
 public class TopicServiceImpl implements TopicService {
 
     private static final String TOPIC = "Topic";
+
     private TopicRepository topicRepository;
 
     private UserRepository userRepository;
 
+    private WikiDataRepository wikiDataRepository;
+
     private ConfigurableConversionService smepConversionService;
 
     public TopicServiceImpl(TopicRepository topicRepository, UserRepository userRepository,
-            ConfigurableConversionService smepConversionService) {
+            WikiDataRepository wikiDataRepository, ConfigurableConversionService smepConversionService) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
         this.smepConversionService = smepConversionService;
+        this.wikiDataRepository = wikiDataRepository;
     }
 
     @Override
@@ -70,7 +76,14 @@ public class TopicServiceImpl implements TopicService {
     public ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest) {
 
         topicRepository.findById(topicRequest.getId())
-                .ifPresent(topic -> topicRequest.setWikiData(topic.getWikiData()));
+                .ifPresent(topic -> topicRequest.setWikiData(topic.getWikiDataSet()));
+
+        final List<WikiData> nonExistWikiDataSet =
+                topicRequest.getWikiData() != null ? topicRequest.getWikiData().stream()
+                        .filter(wikiData -> !wikiDataRepository.existsById(wikiData.getId()))
+                        .collect(Collectors.toList()) : null;
+
+        wikiDataRepository.saveAll(nonExistWikiDataSet);
 
         final Topic topic = topicRepository.save(smepConversionService.convert(topicRequest, Topic.class));
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{topicId}")

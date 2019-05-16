@@ -25,14 +25,12 @@ public class TopicRequest {
     private Long id = 0L;
 
     @NotBlank
-    @Size(max = 150)
     private String title;
 
     @NotBlank
-    @Size(max = 255)
     private String description;
 
-    @Nullable
+    @NotBlank
     private String imageUrl;
 
     @Nullable

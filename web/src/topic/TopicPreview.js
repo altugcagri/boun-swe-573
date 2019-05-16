@@ -10,6 +10,7 @@ import toast from "toasted-notes";
 import { PathNavigator } from "../components/LearningPath";
 
 class TopicPreview extends Component {
+    _isMounted = false;
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +18,8 @@ class TopicPreview extends Component {
                 contentList: []
             },
             enrolled: [],
-            activeTab: ''
+            activeTab: '',
+            resolved: false
         };
         this.loadTopicById = this.loadTopicById.bind(this);
         this.getEnrolledTopicsByUserId = this.getEnrolledTopicsByUserId.bind(this);
@@ -63,15 +65,24 @@ class TopicPreview extends Component {
                 this.setState({
                     enrolled: res.data
                 })
-                this.resolveEnrollment()
+                if (this._isMounted) {
+                    this.resolveEnrollment()
+                }
+
             }).catch(err => {
                 console.log(err)
             });
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.loadTopicById();
         this.getEnrolledTopicsByUserId();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+
     }
 
     search(topicId, enrolled) {
@@ -89,72 +100,84 @@ class TopicPreview extends Component {
             toast.notify("Welcome back!", { position: "top-right" });
             this.props.history.push(`/topic/view/${topic.id}`)
         }
+        if (this._isMounted) {
+            this.setState({ resolved: true })
+        }
+
     }
 
     render() {
 
-        const { topic, activeTab } = this.state;
+        const { topic, activeTab, resolved } = this.state;
         const { editable } = this.props
 
         return (
+
+
             <React.Fragment>
-                <PageHeader title="Details">
-                    <Link to={`/explore`} className="breadcrumbLink">
-                        <span>Explore</span>
-                    </Link>
-                </PageHeader>
+                {resolved && (
+                    <div>
+                        <PageHeader title="Details">
+                            <Link to={`/explore`} className="breadcrumbLink">
+                                <span>Explore</span>
+                            </Link>
+                        </PageHeader>
 
-                <Button
-                    className="btn btn-success fullWidth"
-                    variant="primary"
-                    onClick={() => this.enrollUserToTopic(topic.id)}>
-                    Enroll To This Topic
-                </Button>
+                        <Button
+                            className="btn btn-success fullWidth"
+                            variant="primary"
+                            onClick={() => this.enrollUserToTopic(topic.id)}>
+                            Enroll To This Topic
+                        </Button>
 
-                <div className="bg-alt sectionPadding text-left">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-md-8">
-                                <h4 className="mb-4">Explore <strong>{topic.title}</strong>
-                                    {editable && (
-                                        <Link className="btn btn-outline-primary btn-sm ml-2 inlineBtn" to={`/topic/${topic.id}/edit`}>
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </Link>
-                                    )}
-                                </h4>
-                                <p>
-                                    {topic.description}
-                                </p>
-                            </div>
-                            <div className="col-md-4">
-                                <img src={topic.imageUrl} className="img-fluid" alt={topic.title} />
+                        <div className="bg-alt sectionPadding text-left">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-md-8">
+                                        <h4 className="mb-4">Explore <strong>{topic.title}</strong>
+                                            {editable && (
+                                                <Link className="btn btn-outline-primary btn-sm ml-2 inlineBtn" to={`/topic/${topic.id}/edit`}>
+                                                    <FontAwesomeIcon icon={faEdit} />
+                                                </Link>
+                                            )}
+                                        </h4>
+                                        <p>
+                                            {topic.description}
+                                        </p>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <img src={topic.imageUrl} className="img-fluid" alt={topic.title} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="container mt-5">
-                    <div className="row col-md-12 text-left">
-                        <h4>
-                            Learning <strong>Path</strong>
-                        </h4>
-                    </div>
-                </div>
-                {
-                    activeTab && (
-                        <Tab.Container id="list-group-tabs-example" defaultActiveKey={activeTab}>
-                            <div className="container mt-5 text-left" >
-                                <Row>
-                                    <PathNavigator contents={topic.contentList} />
-
-
-                                </Row>
+                        <div className="container mt-5">
+                            <div className="row col-md-12 text-left">
+                                <h4>
+                                    Learning <strong>Path</strong>
+                                </h4>
                             </div>
-                        </Tab.Container>
-                    )
+                        </div>
+                        {
+                            activeTab && (
+                                <Tab.Container id="list-group-tabs-example" defaultActiveKey={activeTab}>
+                                    <div className="container mt-5 text-left" >
+                                        <Row>
+                                            <PathNavigator contents={topic.contentList} />
+
+
+                                        </Row>
+                                    </div>
+                                </Tab.Container>
+                            )
+                        }
+                    </div>
+                )
                 }
 
             </React.Fragment>
+
         )
     }
 }

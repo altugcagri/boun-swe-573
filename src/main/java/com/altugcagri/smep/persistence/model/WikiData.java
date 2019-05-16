@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -23,9 +24,15 @@ public class WikiData extends DataBaseEntity {
     @Id
     @NotBlank
     private String id;
+
+    @Lob
     @NotBlank
     private String label;
+
+    @Lob
     private String description;
+
+    @Lob
     private String conceptUri;
 
 }

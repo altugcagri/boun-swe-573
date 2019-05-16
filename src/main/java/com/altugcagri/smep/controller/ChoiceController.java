@@ -28,15 +28,15 @@ public class ChoiceController {
         this.choiceService = choiceService;
     }
 
-    @PostMapping(value = "/")
     @Transactional
+    @PostMapping(value = "/")
     public ResponseEntity<ApiResponse> createChoiceByQuestionId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody ChoiceRequest choiceRequest) {
         return choiceService.createChoiceByQuestionId(currentUser, choiceRequest);
     }
 
-    @DeleteMapping(value = "/{choiceId}")
     @Transactional
+    @DeleteMapping(value = "/{choiceId}")
     public ResponseEntity<ApiResponse> deleteChoiceById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long choiceId) {
         return choiceService.deleteChoiceById(currentUser, choiceId);

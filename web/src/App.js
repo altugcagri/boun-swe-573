@@ -22,6 +22,7 @@ import TopicPreview from "./topic/TopicPreview"
 import EditTopic from "./topic/EditTopic";
 import AddContent from "./learningpath/AddContent";
 import EditContent from "./learningpath/EditContent";
+import ContentQuiz from "./learningpath/ContentQuiz";
 
 class App extends Component {
     constructor(props) {
@@ -156,6 +157,15 @@ class App extends Component {
                                 path="/content/:contentId"
                                 exact={true}
                                 component={EditContent}
+                            ></PrivateRoute>
+
+                            <PrivateRoute
+                                authenticated={this.state.isAuthenticated}
+                                path="/content/:contentId/quiz"
+                                exact={true}
+                                component={ContentQuiz}
+                                currentUser={this.state.currentUser}
+                                editable={false}
                             ></PrivateRoute>
 
                             <PrivateRoute

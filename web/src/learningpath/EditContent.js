@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ACCESS_TOKEN, API_BASE_URL} from "../constants";
+import {ACCESS_TOKEN, API_BASE_URL, REQUEST_HEADERS } from "../constants";
 import axios from "axios";
 import {ErrorMessage, Field, Form, Formik} from 'formik';
 import {Button} from "react-bootstrap";
@@ -13,9 +13,6 @@ class EditContent extends Component {
         super(props);
         this.state = {
             content: false,
-            isLoading: false,
-
-
         };
         this.loadContentById = this.loadContentById.bind(this);
 
@@ -24,13 +21,7 @@ class EditContent extends Component {
     loadContentById() {
         let url = API_BASE_URL + `/contents/${this.props.match.params.contentId}`;
 
-        const options = {
-            method: 'GET',
-            headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN) },
-            url
-        };
-
-        axios(options)
+        axios.get(url, REQUEST_HEADERS)
             .then(res => {
                 this.setState({ content: res.data })
             }).catch(err => {
@@ -45,7 +36,6 @@ class EditContent extends Component {
     render() {
         const props = this.props;
         const vm = this.state;
-
         return (
             vm.content && (
 

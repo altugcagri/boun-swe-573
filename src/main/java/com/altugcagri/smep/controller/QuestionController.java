@@ -28,16 +28,15 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @PostMapping(value = "/")
     @Transactional
+    @PostMapping(value = "/")
     public ResponseEntity<ApiResponse> createQuestionByContentId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody QuestionRequest questionRequest) {
         return questionService.createQuestionByContentId(currentUser, questionRequest);
     }
 
-
-    @DeleteMapping("/{questionId}")
     @Transactional
+    @DeleteMapping("/{questionId}")
     public ResponseEntity<ApiResponse> deleteQuestionById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long questionId) {
         return questionService.deleteQuestionById(questionId, currentUser);
