@@ -238,7 +238,9 @@ workflows:
      - test:
          filters:
            branches:
-             only: backend-master
+             only:
+               - backend-master
+               - dev
      - build-backend:
          requires:
            - test
