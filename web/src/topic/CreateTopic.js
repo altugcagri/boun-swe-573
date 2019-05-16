@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { createTopic } from '../util/APIUtils';
-import { withRouter } from 'react-router-dom';
 import toast from "toasted-notes";
 import wdk from "wikidata-sdk";
 import axios from "axios";
 import { Row, Form, Col, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 
 class CreateTopic extends Component {
@@ -124,7 +123,7 @@ class CreateTopic extends Component {
             <React.Fragment>
                 <PageHeader title="Create a Topic">
                     <Link to={`/${this.props.currentUser.username}/topics/created`} className="breadcrumbLink">
-                        <span>Created Topics</span>
+                        <span>My Topics</span>
                     </Link>
                 </PageHeader>
 
@@ -234,7 +233,7 @@ class CreateTopic extends Component {
                                         })
                                     )}
 
-                                    <Button className="mt-4 " variant="success" type="submit" block>
+                                    <Button className="mt-4" variant="success" type="submit" block>
                                         Create Topic
                                     </Button>
                                 </Form>
@@ -242,7 +241,6 @@ class CreateTopic extends Component {
                         </div>
                     </div>
                 </div>
-
             </React.Fragment>
         );
     }

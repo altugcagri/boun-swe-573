@@ -1,4 +1,6 @@
-import { API_BASE_URL, TOPIC_LIST_SIZE, ACCESS_TOKEN } from '../constants';
+import { ACCESS_TOKEN } from '../constants';
+import { resolveEndpoint } from "./Helpers";
+import { func } from 'prop-types';
 
 const request = (options) => {
     const headers = new Headers({
@@ -23,82 +25,93 @@ const request = (options) => {
         );
 };
 
-export function getAllTopics(page, size) {
-    page = page || 0;
-    size = size || TOPIC_LIST_SIZE;
-
-    return request({
-        url: API_BASE_URL + "/topics",
-        method: 'GET'
-    });
-}
-
 export function createTopic(topicData) {
+    let url = resolveEndpoint('createTopic', []);
     return request({
-        url: API_BASE_URL + "/topics",
+        url: url,
         method: 'POST',
         body: JSON.stringify(topicData)
     });
 }
 
-export function createQuestion(questionData) {
+export function updateTopic(topicData) {
+    let url = resolveEndpoint('updateTopic', []);
     return request({
-        url: API_BASE_URL + `/questions/`,
+        url: url,
+        method: 'PUT',
+        body: JSON.stringify(topicData)
+    });
+}
+
+/* Created by Tallrye */
+export function createQuestion(questionData) {
+    let url = resolveEndpoint('createQuestion', []);
+    return request({
+        url: url,
         method: 'POST',
         body: JSON.stringify(questionData)
     });
 }
 
+/* Created by Tallrye */
 export function createOption(optionData) {
+    let url = resolveEndpoint('createOption', []);
     return request({
-        url: API_BASE_URL + `/choices/`,
+        url: url,
         method: 'POST',
         body: JSON.stringify(optionData)
     });
 }
 
-export function createContent(contentData) {
+export function giveAnswer(newAnswer) {
+    let url = resolveEndpoint('giveAnswer', []);
     return request({
-        url: API_BASE_URL + `/contents/`,
+        url: url,
+        method: 'POST',
+        body: JSON.stringify(newAnswer)
+    });
+}
+
+export function createContent(contentData) {
+    let url = resolveEndpoint('createContent', []);
+    return request({
+        url: url,
         method: 'POST',
         body: JSON.stringify(contentData)
     });
 }
 
-export function castVote(voteData) {
-    return request({
-        url: API_BASE_URL + "/polls/" + voteData.pollId + "/votes",
-        method: 'POST',
-        body: JSON.stringify(voteData)
-    });
-}
 
 export function login(loginRequest) {
+    let url = resolveEndpoint('login', []);
     return request({
-        url: API_BASE_URL + "/auth/signin",
+        url: url,
         method: 'POST',
         body: JSON.stringify(loginRequest)
     });
 }
 
 export function signup(signupRequest) {
+    let url = resolveEndpoint('signup', []);
     return request({
-        url: API_BASE_URL + "/auth/signup",
+        url: url,
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
 }
 
 export function checkUsernameAvailability(username) {
+    let url = resolveEndpoint('checkUsernameAvailability', [{ "slug1": username }]);
     return request({
-        url: API_BASE_URL + "/user/checkUsernameAvailability?username=" + username,
+        url: url,
         method: 'GET'
     });
 }
 
 export function checkEmailAvailability(email) {
+    let url = resolveEndpoint('checkEmailAvailability', [{ "slug1": email }]);
     return request({
-        url: API_BASE_URL + "/user/checkEmailAvailability?email=" + email,
+        url: url,
         method: 'GET'
     });
 }
@@ -109,35 +122,18 @@ export function getCurrentUser() {
         return Promise.reject("No access token set.");
     }
 
+    let url = resolveEndpoint('getCurrentUser', []);
+
     return request({
-        url: API_BASE_URL + "/user/me",
+        url: url,
         method: 'GET'
     });
 }
 
 export function getUserProfile(username) {
+    let url = resolveEndpoint('getUserProfile', [{ "slug1": username }]);
     return request({
-        url: API_BASE_URL + "/users/" + username,
-        method: 'GET'
-    });
-}
-
-export function getUserCreatedTopics(username, page, size) {
-    page = page || 0;
-    size = size || TOPIC_LIST_SIZE;
-
-    return request({
-        url: API_BASE_URL + "/users/" + username + "/topics?page=" + page + "&size=" + size,
-        method: 'GET'
-    });
-}
-
-export function getUserVotedPolls(username, page, size) {
-    page = page || 0;
-    size = size || TOPIC_LIST_SIZE;
-
-    return request({
-        url: API_BASE_URL + "/users/" + username + "/votes?page=" + page + "&size=" + size,
+        url: url,
         method: 'GET'
     });
 }

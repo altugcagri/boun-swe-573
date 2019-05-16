@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { API_BASE_URL, REQUEST_HEADERS } from "../constants";
+import { REQUEST_HEADERS } from "../constants";
 import axios from "axios";
 import { Row, Tab, Button } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
@@ -8,6 +8,9 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import PageHeader from "../components/PageHeader";
 import toast from "toasted-notes";
 import { PathNavigator } from "../components/LearningPath";
+import { resolveEndpoint } from "../util/Helpers";
+import Loading from '../components/Loading';
+import { WikiLabels } from "../components/Wiki";
 
 class TopicPreview extends Component {
     _isMounted = false;
@@ -19,7 +22,8 @@ class TopicPreview extends Component {
             },
             enrolled: [],
             activeTab: '',
-            resolved: false
+            resolved: false,
+            loading: true
         };
         this.loadTopicById = this.loadTopicById.bind(this);
         this.getEnrolledTopicsByUserId = this.getEnrolledTopicsByUserId.bind(this);
@@ -28,12 +32,11 @@ class TopicPreview extends Component {
 
     enrollUserToTopic(topicId) {
 
-        const reqObj = {
+        let url = resolveEndpoint('enrollToTopic', []);
+        let reqObj = {
             topicId: topicId,
             username: this.props.currentUser.username
-        };
-
-        const url = API_BASE_URL + `/topics/enroll/`;
+        }
         axios.post(url, reqObj, REQUEST_HEADERS)
             .then(res => {
                 toast.notify("Enrolled successfully.", { position: "top-right" });
@@ -44,7 +47,7 @@ class TopicPreview extends Component {
     }
 
     loadTopicById() {
-        const url = API_BASE_URL + `/topics/topic/${this.props.match.params.topicId}`;
+        let url = resolveEndpoint('getTopicById', [{ "slug1": this.props.match.params.topicId }]);
 
         axios.get(url, REQUEST_HEADERS)
             .then(res => {
@@ -52,13 +55,14 @@ class TopicPreview extends Component {
                     topic: res.data,
                     activeTab: res.data.contentList.length > 0 ? res.data.contentList[0].id : ''
                 })
+                this.getEnrolledTopicsByUserId();
             }).catch(err => {
                 console.log(err)
             });
     }
 
     getEnrolledTopicsByUserId() {
-        const url = API_BASE_URL + `/topics/enrolled/${this.props.currentUser.id}`;
+        let url = resolveEndpoint('getEnrolledTopicsByUserId', [{ "slug1": this.props.currentUser.id }]);
 
         axios.get(url, REQUEST_HEADERS)
             .then(res => {
@@ -77,7 +81,6 @@ class TopicPreview extends Component {
     componentDidMount() {
         this._isMounted = true;
         this.loadTopicById();
-        this.getEnrolledTopicsByUserId();
     }
 
     componentWillUnmount() {
@@ -101,83 +104,87 @@ class TopicPreview extends Component {
             this.props.history.push(`/topic/view/${topic.id}`)
         }
         if (this._isMounted) {
-            this.setState({ resolved: true })
+            this.setState({
+                resolved: true,
+                loading: false
+            })
         }
 
     }
 
     render() {
 
-        const { topic, activeTab, resolved } = this.state;
+        const { topic, activeTab, resolved, loading } = this.state;
         const { editable } = this.props
 
         return (
 
-
             <React.Fragment>
-                {resolved && (
-                    <div>
-                        <PageHeader title="Details">
-                            <Link to={`/explore`} className="breadcrumbLink">
-                                <span>Explore</span>
-                            </Link>
-                        </PageHeader>
+                {loading ? <Loading /> : (
+                    <React.Fragment>
+                        {resolved && (
+                            <div>
+                                <PageHeader title="Details">
+                                    <Link to={`/explore`} className="breadcrumbLink">
+                                        <span>Explore</span>
+                                    </Link>
+                                </PageHeader>
 
-                        <Button
-                            className="btn btn-success fullWidth"
-                            variant="primary"
-                            onClick={() => this.enrollUserToTopic(topic.id)}>
-                            Enroll To This Topic
-                        </Button>
+                                <Button
+                                    className="btn btn-success fullWidth"
+                                    variant="primary"
+                                    onClick={() => this.enrollUserToTopic(topic.id)}>
+                                    Enroll To This Topic
+                                </Button>
 
-                        <div className="bg-alt sectionPadding text-left">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-md-8">
-                                        <h4 className="mb-4">Explore <strong>{topic.title}</strong>
-                                            {editable && (
-                                                <Link className="btn btn-outline-primary btn-sm ml-2 inlineBtn" to={`/topic/${topic.id}/edit`}>
-                                                    <FontAwesomeIcon icon={faEdit} />
-                                                </Link>
-                                            )}
-                                        </h4>
-                                        <p>
-                                            {topic.description}
-                                        </p>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <img src={topic.imageUrl} className="img-fluid" alt={topic.title} />
+                                <div className="bg-alt sectionPadding text-left">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-md-8">
+                                                <h4 className="mb-4">Explore <strong>{topic.title}</strong>
+                                                    {editable && (
+                                                        <Link className="btn btn-outline-primary btn-sm ml-2 inlineBtn" to={`/topic/${topic.id}/edit`}>
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </Link>
+                                                    )}
+                                                </h4>
+                                                <p>
+                                                    {topic.description}
+                                                </p>
+                                                <WikiLabels
+                                                    wikis={topic.wikiData}
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <img src={topic.imageUrl} className="img-fluid" alt={topic.title} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div className="container mt-5">
-                            <div className="row col-md-12 text-left">
-                                <h4>
-                                    Learning <strong>Path</strong>
-                                </h4>
-                            </div>
-                        </div>
-                        {
-                            activeTab && (
-                                <Tab.Container id="list-group-tabs-example" defaultActiveKey={activeTab}>
-                                    <div className="container mt-5 text-left" >
-                                        <Row>
-                                            <PathNavigator contents={topic.contentList} />
-
-
-                                        </Row>
+                                <div className="container mt-5">
+                                    <div className="row col-md-12 text-left">
+                                        <h4>
+                                            Learning <strong>Path</strong>
+                                        </h4>
                                     </div>
-                                </Tab.Container>
-                            )
-                        }
-                    </div>
-                )
-                }
-
+                                </div>
+                                {
+                                    activeTab && (
+                                        <Tab.Container id="list-group-tabs-example" defaultActiveKey={activeTab}>
+                                            <div className="container mt-5 text-left" >
+                                                <Row>
+                                                    <PathNavigator contents={topic.contentList} preview={true} />
+                                                </Row>
+                                            </div>
+                                        </Tab.Container>
+                                    )
+                                }
+                            </div>
+                        )}
+                    </React.Fragment>
+                )}
             </React.Fragment>
-
         )
     }
 }

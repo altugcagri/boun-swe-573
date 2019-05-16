@@ -36,10 +36,10 @@ function QuestionModal(FieldProps) {
                         onSubmit={(values, { setSubmitting }) => {
                             setTimeout(() => {
                                 const newQuestion = {
-                                    contentId:  FieldProps.contentId,
+                                    contentId: FieldProps.contentId,
                                     text: values.text
                                 };
-                                createQuestion(newQuestion)
+                                createQuestion(newQuestion, FieldProps.contentId)
                                     .then(res => {
                                         toast.notify("Question created successfully.", { position: "top-right" });
                                         setModalState(false)

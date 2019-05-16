@@ -13,6 +13,7 @@ public class TopicRequestToTopic implements Converter<TopicRequest, Topic> {
                 .title(source.getTitle())
                 .description(source.getDescription())
                 .wikiDataSet(source.getWikiData())
+                .enrolledUsers(source.getEnrolledUsers())
                 .imageUrl(source.getImageUrl())
                 .build();
 

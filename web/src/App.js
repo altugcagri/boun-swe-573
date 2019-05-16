@@ -23,6 +23,7 @@ import EditTopic from "./topic/EditTopic";
 import AddContent from "./learningpath/AddContent";
 import EditContent from "./learningpath/EditContent";
 import ContentQuiz from "./learningpath/ContentQuiz";
+import ViewContent from "./learningpath/ViewContent";
 
 class App extends Component {
     constructor(props) {
@@ -157,6 +158,13 @@ class App extends Component {
                                 path="/content/:contentId"
                                 exact={true}
                                 component={EditContent}
+                            ></PrivateRoute>
+
+                            <PrivateRoute
+                                authenticated={this.state.isAuthenticated}
+                                path="/content/view/:contentId"
+                                exact={true}
+                                component={ViewContent}
                             ></PrivateRoute>
 
                             <PrivateRoute

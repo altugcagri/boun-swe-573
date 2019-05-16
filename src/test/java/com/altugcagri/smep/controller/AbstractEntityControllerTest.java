@@ -18,6 +18,6 @@ public abstract class AbstractEntityControllerTest {
     public static void setUp() {
         currentUser = UserPrincipal
                 .create(User.builder().name("name").username("username").email("email").id(0L).password("pass")
-                        .answeredChoices(new HashSet<>()).enrolledTopics(new HashSet<>()).build());
+                        .enrolledTopics(new HashSet<>()).build());
     }
 }

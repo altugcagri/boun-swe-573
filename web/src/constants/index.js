@@ -1,6 +1,6 @@
 export const API_BASE_URL = 'http://localhost:8080/api';
-// export const API_BASE_URL = 'http://192.168.1.55:8080/api';
-// export const API_BASE_URL = '/api';
+//export const API_BASE_URL = 'http://35.158.119.107:8080/api';
+//export const API_BASE_URL = 'http://192.168.1.40:8080/api';
 export const ACCESS_TOKEN = 'accessToken';
 
 export const REQUEST_HEADERS = {

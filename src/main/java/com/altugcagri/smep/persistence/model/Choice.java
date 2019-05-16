@@ -46,11 +46,4 @@ public class Choice extends UserCreatedDataBaseEntity{
     @ManyToOne
     private Question question;
 
-    @Nullable
-    @ManyToMany
-    @JoinTable(name = "answered_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "choice_id")
-    )
-    private Set<User> answeredUsers;
 }

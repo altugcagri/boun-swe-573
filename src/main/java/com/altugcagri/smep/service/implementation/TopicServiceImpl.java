@@ -82,6 +82,9 @@ public class TopicServiceImpl implements TopicService {
 
         wikiDataRepository.saveAll(nonExistWikiDataSet);
 
+        topicRepository.findById(topicRequest.getId())
+                .ifPresent(topic -> topicRequest.setEnrolledUsers(topic.getEnrolledUsers()));
+
         final Topic topic = topicRepository.save(smepConversionService.convert(topicRequest, Topic.class));
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{topicId}")
                 .buildAndExpand(topic.getId()).toUri();
