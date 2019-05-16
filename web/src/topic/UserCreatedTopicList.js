@@ -37,7 +37,7 @@ class UserCreatedTopicList extends Component {
     handleDeleteTopicById(topicIdToDelete) {
         let url = API_BASE_URL + `/topics/topic/${topicIdToDelete}`;
 
-        axios.get(url, REQUEST_HEADERS)
+        axios.delete(url, REQUEST_HEADERS)
             .then(res => {
                 this.loadUserCreatedTopics()
             }).catch(err => {

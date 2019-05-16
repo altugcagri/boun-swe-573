@@ -31,22 +31,22 @@ public class ContentController {
         this.contentService = contentService;
     }
 
-    @PostMapping(value = "/")
     @Transactional
+    @PostMapping(value = "/")
     public ResponseEntity<ApiResponse> createContentByTopicId(@CurrentUser UserPrincipal currentUser,
             @Valid @RequestBody ContentRequest contentRequest) {
         return contentService.createContentByTopicId(currentUser, contentRequest);
     }
 
-    @GetMapping(value = "/{contentId}")
     @Transactional
+    @GetMapping(value = "/{contentId}")
     public ResponseEntity<ContentResponse> getContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return contentService.getContentById(currentUser, contentId);
     }
 
-    @DeleteMapping(value = "/{contentId}")
     @Transactional
+    @DeleteMapping(value = "/{contentId}")
     public ResponseEntity<ApiResponse> deleteContentById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return contentService.deleteContentById(currentUser, contentId);

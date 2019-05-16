@@ -13,11 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 
@@ -34,12 +34,12 @@ public class Content extends UserCreatedDataBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @NotBlank
-    @Size(max = 150)
     private String title;
 
+    @Lob
     @NotBlank
-    @Size(max = 1000)
     private String text;
 
     @JsonIgnore

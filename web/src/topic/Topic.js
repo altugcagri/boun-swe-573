@@ -26,10 +26,12 @@ class Topic extends Component {
 
         axios.get(url, REQUEST_HEADERS)
             .then(res => {
+                console.log(res.data.contentList.length)
                 this.setState({
                     topic: res.data,
-                    activeTab: res.data.contentList.length > 0 ? res.data.contentList[0].id : ''
+                    activeTab: res.data.contentList.length.valueOf() > 0 ? res.data.contentList[0].id : ''
                 })
+                console.log(res.data)
             }).catch(err => {
                 console.log(err)
             });
