@@ -47,7 +47,7 @@ public class QuestionController {
 
     @Transactional
     @GetMapping("/{contentId}")
-    public ResponseEntity<LearningStepsResponse> getQuestionsByContentId(@CurrentUser UserPrincipal currentUser,
+    public ResponseEntity<LearningStepsResponse> getLearningStepsByContentId(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long contentId) {
         return questionService.getLearningSteps(currentUser, contentId);
     }

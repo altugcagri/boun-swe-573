@@ -1,5 +1,6 @@
 package com.altugcagri.smep.controller;
 
+import com.altugcagri.smep.controller.dto.request.AnswerRequest;
 import com.altugcagri.smep.controller.dto.request.QuestionRequest;
 import com.altugcagri.smep.service.QuestionService;
 import org.junit.Test;
@@ -27,13 +28,30 @@ public class QuestionControllerTest extends AbstractEntityControllerTest {
         verify(questionService, times(1)).createQuestionByContentId(currentUser, request);
     }
 
-
     @Test
     public void testDeleteQuestionById() {
         //Test
         sut.deleteQuestionById(currentUser, 0L);
         //Verify
         verify(questionService, times(1)).deleteQuestionById(0L, currentUser);
+    }
+
+    @Test
+    public void testGetLearningStepsByContentId() {
+        //Test
+        sut.getLearningStepsByContentId(currentUser, 0L);
+        //Verify
+        verify(questionService, times(1)).getLearningSteps(currentUser, 0L);
+    }
+
+    @Test
+    public void testGiveAnswer() {
+        //Prepare
+        final AnswerRequest request = AnswerRequest.builder().choiceId(0L).questionId(0L).build();
+        //Test
+        sut.giveAnswer(currentUser, request);
+        //Verify
+        verify(questionService, times(1)).giveAnswer(currentUser, request);
     }
 
 }

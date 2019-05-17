@@ -61,7 +61,6 @@ public class ContentServiceImpl implements ContentService {
         return ResponseEntity.ok().body(smepConversionService.convert(content, ContentResponse.class));
     }
 
-
     @Override
     public ResponseEntity<ApiResponse> deleteContentById(UserPrincipal currentUser, Long contentId) {
 
