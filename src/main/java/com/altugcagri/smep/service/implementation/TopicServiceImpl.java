@@ -19,9 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,10 +84,8 @@ public class TopicServiceImpl implements TopicService {
                 .ifPresent(topic -> topicRequest.setEnrolledUsers(topic.getEnrolledUsers()));
 
         final Topic topic = topicRepository.save(smepConversionService.convert(topicRequest, Topic.class));
-        final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{topicId}")
-                .buildAndExpand(topic.getId()).toUri();
 
-        return ResponseEntity.created(location).body(smepConversionService.convert(topic, TopicResponse.class));
+        return ResponseEntity.ok().body(smepConversionService.convert(topic, TopicResponse.class));
     }
 
     @Override

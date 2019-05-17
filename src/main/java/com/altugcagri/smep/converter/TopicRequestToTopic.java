@@ -17,7 +17,7 @@ public class TopicRequestToTopic implements Converter<TopicRequest, Topic> {
                 .imageUrl(source.getImageUrl())
                 .build();
 
-        if (source.getId() != null) {
+        if (source.getId() != 0L) {
             topic.setId(source.getId());
         }
 

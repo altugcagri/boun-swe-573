@@ -1,14 +1,25 @@
 plugins {
 	id 'org.springframework.boot' version '2.1.3.RELEASE'
 	id 'java'
+	id 'jacoco'
 	id "org.sonarqube" version "2.7"
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
+
+def jacocoMergeFiles = "${buildDir}/jacoco/jacocoMerge.exec"
 
 group = 'com.altugcagri.smep'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+sonarqube {
+	properties {
+		property "sonar.jacoco.reportPaths", jacocoMergeFiles
+		property "sonar.exclusions", "/test/**/*.java"
+	}
+}
 
 repositories {
 	mavenCentral()
