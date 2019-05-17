@@ -39,9 +39,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     private ContentRepository contentRepository;
 
-    private LearningStepRepository learningStepRepository;
-
     private ConfigurableConversionService smepConversionService;
+
+    private LearningStepRepository learningStepRepository;
 
     public QuestionServiceImpl(QuestionRepository questionRepository, ContentRepository contentRepository,
             ConfigurableConversionService smepConversionService, LearningStepRepository learningStepRepository) {
@@ -65,21 +65,6 @@ public class QuestionServiceImpl implements QuestionService {
         question.setContent(content);
         questionRepository.save(question);
         return ResponseEntity.ok().body(new ApiResponse(true, "Question created successfully"));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> createChoiceByQuestionId(UserPrincipal currentUser, Long questionId,
-            Choice choiceRequest) {
-
-        final Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ResourceNotFoundException(QUESTION, "id", questionId.toString()));
-
-        SmeptUtilities.checkCreatedBy(QUESTION, currentUser.getId(), question.getCreatedBy());
-
-        choiceRequest.setQuestion(question);
-        question.getChoiceList().add(choiceRequest);
-        questionRepository.save(question);
-        return ResponseEntity.ok().body(new ApiResponse(true, "Choice created successfully"));
     }
 
     @Override

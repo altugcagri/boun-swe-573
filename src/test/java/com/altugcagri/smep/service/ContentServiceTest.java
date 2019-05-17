@@ -18,6 +18,8 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -92,6 +94,11 @@ public class ContentServiceTest extends AbstractServiceTest {
     public void testGetContentById_Success() {
         //Prepare
         final Content content = TestUtils.createDummyContent();
+        final List<Content> contentList = new ArrayList<>();
+        final Topic topic = TestUtils.createDummyTopic();
+        contentList.add(content);
+        content.setTopic(topic);
+        topic.setContentList(contentList);
         final ContentResponse contentResponse = TestUtils.createDummyContentResponse();
         when(contentRepository.findById(0L)).thenReturn(Optional.of(content));
         when(smepConversionService.convert(content, ContentResponse.class)).thenReturn(contentResponse);

@@ -3,7 +3,9 @@ package com.altugcagri.smep;
 import com.altugcagri.smep.controller.dto.request.ChoiceRequest;
 import com.altugcagri.smep.controller.dto.request.ContentRequest;
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
+import com.altugcagri.smep.controller.dto.request.LoginRequest;
 import com.altugcagri.smep.controller.dto.request.QuestionRequest;
+import com.altugcagri.smep.controller.dto.request.SignUpRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ContentResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
@@ -168,5 +170,22 @@ public class TestUtils {
         enrollmentRequest.setTopicId(0L);
         enrollmentRequest.setUsername("username");
         return enrollmentRequest;
+    }
+
+    public static SignUpRequest createDummySignUpRequest() {
+        final SignUpRequest signUpRequest = new SignUpRequest();
+        signUpRequest.setEmail("email");
+        signUpRequest.setName("name");
+        signUpRequest.setPassword("pass");
+        signUpRequest.setUsername("username");
+        return signUpRequest;
+
+    }
+
+    public static LoginRequest createDummyLoginRequest() {
+        final LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setPassword("pass");
+        loginRequest.setUsernameOrEmail("usernameOrEmail");
+        return loginRequest;
     }
 }

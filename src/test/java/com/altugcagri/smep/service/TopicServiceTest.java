@@ -51,7 +51,7 @@ public class TopicServiceTest extends AbstractServiceTest {
     public void testGetAllTopics() {
         //Prepare
         final List<Topic> topicList = TestUtils.createDummyTopicList();
-        when(topicRepository.findAll()).thenReturn(topicList);
+        when(topicRepository.findByPublished(true)).thenReturn(topicList);
         when(smepConversionService.convert(topicList.get(0), TopicResponse.class))
                 .thenReturn(TestUtils.createDummyTopicResponse());
         //Test
@@ -202,7 +202,7 @@ public class TopicServiceTest extends AbstractServiceTest {
         final List<Topic> enrolledTopics = TestUtils.createDummyTopicList();
         final TopicResponse topicResponse = TestUtils.createDummyTopicResponse();
         when(userRepository.findById(0L)).thenReturn(Optional.of(user));
-        when(topicRepository.findTopicByEnrolledUsersContains(user)).thenReturn(enrolledTopics);
+        when(topicRepository.findTopicByEnrolledUsersContainsAndPublished(user,true)).thenReturn(enrolledTopics);
         when(smepConversionService.convert(enrolledTopics.get(0), TopicResponse.class)).thenReturn(topicResponse);
         //Test
         final ResponseEntity<List<TopicResponse>> responseEntity = sut.getTopicsByEnrolledUserId(currentUser, 0L);

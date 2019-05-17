@@ -17,6 +17,7 @@ public class TopicToTopicResponse implements Converter<Topic, TopicResponse> {
                 .createdBy(source.getCreatedBy())
                 .creationDateTime(source.getCreatedAt())
                 .wikiData(source.getWikiDataSet())
+                .published(source.isPublished())
                 .build();
     }
 }

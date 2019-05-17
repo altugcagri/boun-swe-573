@@ -1,6 +1,7 @@
 package com.altugcagri.smep.controller;
 
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
+import com.altugcagri.smep.controller.dto.request.PublishRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
@@ -50,6 +51,13 @@ public class TopicController {
     public ResponseEntity<TopicResponse> getTopicById(@CurrentUser UserPrincipal currentUser,
             @PathVariable Long topicId) {
         return topicService.getTopicById(topicId, currentUser);
+    }
+
+    @Transactional
+    @PostMapping(value = "/publish/")
+    public ResponseEntity<ApiResponse> publishStatusUpdate(@CurrentUser UserPrincipal currentUser,
+            PublishRequest publishRequest) {
+        return topicService.publishStatusUpdate(currentUser, publishRequest);
     }
 
     @Transactional
