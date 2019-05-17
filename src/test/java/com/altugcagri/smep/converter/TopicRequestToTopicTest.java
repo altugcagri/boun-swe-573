@@ -32,7 +32,6 @@ public class TopicRequestToTopicTest {
         final Topic topic = sut.convert(source);
         //Verify
         assertNotNull(topic);
-        assertEquals(topic.getId(), source.getId());
         assertEquals(topic.getDescription(), source.getDescription());
         assertEquals(topic.getTitle(), source.getTitle());
         assertEquals(topic.getImageUrl(), source.getImageUrl());

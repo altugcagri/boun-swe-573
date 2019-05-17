@@ -22,7 +22,7 @@ import java.util.Set;
 public class TopicRequest {
 
 
-    private Long id;
+    private Long id = 0L;
 
     @NotBlank
     private String title;

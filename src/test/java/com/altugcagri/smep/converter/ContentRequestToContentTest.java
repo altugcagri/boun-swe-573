@@ -33,7 +33,6 @@ public class ContentRequestToContentTest {
         final Content content = sut.convert(source);
         //Verify
         assertNotNull(content);
-        assertEquals(content.getId(), source.getId());
         assertEquals(content.getTitle(), source.getTitle());
         assertEquals(content.getText(), source.getText());
         assertNull(content.getTopic());
