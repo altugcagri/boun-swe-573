@@ -100,6 +100,7 @@ public class QuestionServiceImpl implements QuestionService {
         final List<QuestionResponse> questionResponseList = new ArrayList<>();
         final AtomicReference<String> contentTitle = new AtomicReference<>();
         final AtomicReference<String> topicTitle = new AtomicReference<>();
+        final AtomicReference<Long> topicId = new AtomicReference<>();
         final AtomicLong nextContentId = new AtomicLong();
 
         contentRepository.findById(contentId)
@@ -129,10 +130,12 @@ public class QuestionServiceImpl implements QuestionService {
                     }
                     contentTitle.set(content.getTitle());
                     topicTitle.set(content.getTopic().getTitle());
+                    topicId.set(content.getTopic().getId());
                 });
 
         return ResponseEntity.ok()
-                .body(LearningStepsResponse.builder().questions(questionResponseList).contentTitle(contentTitle.get())
+                .body(LearningStepsResponse.builder().questions(questionResponseList).contentId(contentId)
+                        .topicId(topicId.get()).contentTitle(contentTitle.get())
                         .topicTitle(topicTitle.get()).nextContentId(nextContentId.get()).build());
     }
 

@@ -13,6 +13,8 @@ public class ContentToContentResponse implements Converter<Content, ContentRespo
                 .title(source.getTitle())
                 .text(source.getText())
                 .topicId(source.getTopic().getId())
+                .topicTitle(source.getTopic().getTitle())
+                .questionCount((long) (source.getQuestionList() != null ? source.getQuestionList().size() : 0))
                 .build();
     }
 }
