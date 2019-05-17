@@ -17,6 +17,7 @@ sourceCompatibility = '1.8'
 sonarqube {
 	properties {
 		property "sonar.jacoco.reportPaths", jacocoMergeFiles
+		property "sonar.exclusions", "/test/**/*.java"
 	}
 }
 
