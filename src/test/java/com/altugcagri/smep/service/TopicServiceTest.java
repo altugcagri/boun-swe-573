@@ -2,14 +2,18 @@ package com.altugcagri.smep.service;
 
 import com.altugcagri.smep.TestUtils;
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
+import com.altugcagri.smep.controller.dto.request.PublishRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.exception.CreatedByException;
+import com.altugcagri.smep.exception.NotValidTopicException;
 import com.altugcagri.smep.exception.ResourceNotFoundException;
 import com.altugcagri.smep.persistence.TopicRepository;
 import com.altugcagri.smep.persistence.UserRepository;
 import com.altugcagri.smep.persistence.WikiDataRepository;
+import com.altugcagri.smep.persistence.model.Content;
+import com.altugcagri.smep.persistence.model.Question;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.persistence.model.User;
 import com.altugcagri.smep.service.implementation.TopicServiceImpl;
@@ -121,6 +125,59 @@ public class TopicServiceTest extends AbstractServiceTest {
     }
 
     @Test(expected = ResourceNotFoundException.class)
+    public void testpublishStatusUpdate_TopicNotFound() {
+        //Prepare
+        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.empty());
+        //Test
+        sut.publishStatusUpdate(currentUser, publishRequest);
+    }
+
+    @Test(expected = CreatedByException.class)
+    public void testPublishStatusUpdate_CreateByFail() {
+        //Prepare
+        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final Topic topic = TestUtils.createDummyTopic();
+        topic.setCreatedBy(1L);
+        when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.of(topic));
+        //Test
+        sut.publishStatusUpdate(currentUser, publishRequest);
+    }
+
+    @Test(expected = NotValidTopicException.class)
+    public void testPublishStatusUpdate_NotValidTopic() {
+        //Prepare
+        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final Topic topic = TestUtils.createDummyTopic();
+        final List<Content> contentList = TestUtils.createDummyContentList();
+        contentList.get(0).setQuestionList(null);
+        topic.setContentList(contentList);
+        topic.setCreatedBy(currentUser.getId());
+        when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.of(topic));
+        //Test
+        sut.publishStatusUpdate(currentUser, publishRequest);
+    }
+
+    @Test
+    public void testPublishStatusUpdate_Success() {
+        //Prepare
+        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final Topic topic = TestUtils.createDummyTopic();
+        final List<Content> contentList = TestUtils.createDummyContentList();
+        final List<Question> questionList = TestUtils.createDummyQuetionList();
+        contentList.get(0).setQuestionList(questionList);
+        topic.setContentList(contentList);
+        topic.setCreatedBy(currentUser.getId());
+        when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.of(topic));
+        //Test
+        final ResponseEntity<ApiResponse> responseEntity = sut.publishStatusUpdate(currentUser, publishRequest);
+        //Verify
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        assertEquals(responseEntity.getBody().getSuccess(), true);
+    }
+
+
+    @Test(expected = ResourceNotFoundException.class)
     public void testDeleteByTopicId_TopicNotFound() {
         //Prepare
         when(topicRepository.findById(0L)).thenReturn(Optional.empty());
@@ -202,7 +259,7 @@ public class TopicServiceTest extends AbstractServiceTest {
         final List<Topic> enrolledTopics = TestUtils.createDummyTopicList();
         final TopicResponse topicResponse = TestUtils.createDummyTopicResponse();
         when(userRepository.findById(0L)).thenReturn(Optional.of(user));
-        when(topicRepository.findTopicByEnrolledUsersContainsAndPublished(user,true)).thenReturn(enrolledTopics);
+        when(topicRepository.findTopicByEnrolledUsersContainsAndPublished(user, true)).thenReturn(enrolledTopics);
         when(smepConversionService.convert(enrolledTopics.get(0), TopicResponse.class)).thenReturn(topicResponse);
         //Test
         final ResponseEntity<List<TopicResponse>> responseEntity = sut.getTopicsByEnrolledUserId(currentUser, 0L);

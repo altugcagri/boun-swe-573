@@ -4,6 +4,7 @@ import com.altugcagri.smep.controller.dto.request.ChoiceRequest;
 import com.altugcagri.smep.controller.dto.request.ContentRequest;
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
 import com.altugcagri.smep.controller.dto.request.LoginRequest;
+import com.altugcagri.smep.controller.dto.request.PublishRequest;
 import com.altugcagri.smep.controller.dto.request.QuestionRequest;
 import com.altugcagri.smep.controller.dto.request.SignUpRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
@@ -90,6 +91,12 @@ public class TestUtils {
         question.setText("someText");
         question.setContent(createDummyContent());
         return question;
+    }
+
+    public static List<Question> createDummyQuetionList() {
+        final List<Question> questionList = new ArrayList<>();
+        questionList.add(createDummyQuestion());
+        return questionList;
     }
 
     public static QuestionRequest createDummyQuestionRequest() {
@@ -187,5 +194,12 @@ public class TestUtils {
         loginRequest.setPassword("pass");
         loginRequest.setUsernameOrEmail("usernameOrEmail");
         return loginRequest;
+    }
+
+    public static PublishRequest createDummyPublisRequest() {
+        final PublishRequest publishRequest = new PublishRequest();
+        publishRequest.setPublish(true);
+        publishRequest.setTopicId(0L);
+        return publishRequest;
     }
 }

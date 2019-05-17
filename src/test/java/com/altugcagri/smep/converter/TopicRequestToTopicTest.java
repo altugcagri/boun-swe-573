@@ -28,6 +28,7 @@ public class TopicRequestToTopicTest {
     public void testConvertSuccessfully() {
         //Prepare
         final TopicRequest source = TestUtils.createDummyTopicRequest();
+        source.setId(1L);
         //Test
         final Topic topic = sut.convert(source);
         //Verify

@@ -63,16 +63,15 @@ public class QuestionServiceTest extends AbstractServiceTest {
         sut.createQuestionByContentId(currentUser, questionRequest);
     }
 
-
     @Test
     public void testCreateQuestionByContentId_Success() {
         //Prepare
         final QuestionRequest questionRequest = TestUtils.createDummyQuestionRequest();
         final Content content = TestUtils.createDummyContent();
-        final Question question= TestUtils.createDummyQuestion();
+        final Question question = TestUtils.createDummyQuestion();
         content.setCreatedBy(currentUser.getId());
         when(contentRepository.findById(questionRequest.getContentId())).thenReturn(Optional.of(content));
-        when(smepConversionService.convert(questionRequest,Question.class)).thenReturn(question);
+        when(smepConversionService.convert(questionRequest, Question.class)).thenReturn(question);
         //Test
         ResponseEntity<ApiResponse> responseEntity = sut.createQuestionByContentId(currentUser, questionRequest);
         //Verify
@@ -80,4 +79,36 @@ public class QuestionServiceTest extends AbstractServiceTest {
         assertEquals(responseEntity.getBody().getSuccess(), true);
     }
 
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testDeleteQuestionById_ContentNotFound() {
+        //Prepare
+        when(questionRepository.findById(0L)).thenReturn(Optional.empty());
+        //Test
+        sut.deleteQuestionById(0L, currentUser);
+    }
+
+    @Test(expected = CreatedByException.class)
+    public void testDeleteQuestionById_CreateByFail() {
+        //Prepare
+        final Question question = TestUtils.createDummyQuestion();
+        question.setCreatedBy(1L);
+        when(questionRepository.findById(0L)).thenReturn(Optional.of(question));
+        //Test
+        sut.deleteQuestionById(0L, currentUser);
+    }
+
+    @Test
+    public void testDeleteQuestionById_Success() {
+        //Prepare
+        //Prepare
+        final Question question = TestUtils.createDummyQuestion();
+        question.setCreatedBy(currentUser.getId());
+        when(questionRepository.findById(0L)).thenReturn(Optional.of(question));
+        //Test
+        ResponseEntity<ApiResponse> responseEntity = sut.deleteQuestionById(0L, currentUser);
+        //Verify
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        assertEquals(responseEntity.getBody().getSuccess(), true);
+    }
 }

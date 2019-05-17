@@ -1,6 +1,7 @@
 package com.altugcagri.smep.controller;
 
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
+import com.altugcagri.smep.controller.dto.request.PublishRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.service.TopicService;
 import org.junit.Test;
@@ -55,6 +56,16 @@ public class TopicControllerTest extends AbstractEntityControllerTest {
         sut.createTopic(request);
         //Verify
         verify(topicService, times(1)).createTopic(request);
+    }
+
+    @Test
+    public void testPublishStatusUpdate() {
+        //Prepare
+        final PublishRequest request = PublishRequest.builder().publish(true).topicId(0L).build();
+        //Test
+        sut.publishStatusUpdate(currentUser, request);
+        //Verify
+        verify(topicService, times(1)).publishStatusUpdate(currentUser, request);
     }
 
     @Test
