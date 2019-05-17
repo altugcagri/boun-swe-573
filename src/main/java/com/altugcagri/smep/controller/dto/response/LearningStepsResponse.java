@@ -19,8 +19,12 @@ public class LearningStepsResponse {
 
     private String contentTitle;
 
+    private Long contentId;
+
     private Long nextContentId;
 
     private String topicTitle;
+
+    private Long topicId;
 
 }
