@@ -73,7 +73,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest) {
+    public ResponseEntity<TopicResponse> createTopic(UserPrincipal currentUser, TopicRequest topicRequest) {
 
         final List<WikiData> nonExistWikiDataSet =
                 topicRequest.getWikiData() != null ? topicRequest.getWikiData().stream()
@@ -84,6 +84,8 @@ public class TopicServiceImpl implements TopicService {
 
         topicRepository.findById(topicRequest.getId())
                 .ifPresent(topic -> topicRequest.setEnrolledUsers(topic.getEnrolledUsers()));
+
+        topicRequest.setCreatedByName(currentUser.getUsername());
 
         final Topic topic = topicRepository.save(smepConversionService.convert(topicRequest, Topic.class));
 

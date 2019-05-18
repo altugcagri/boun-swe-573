@@ -62,8 +62,9 @@ public class TopicController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<TopicResponse> createTopic(@Valid @RequestBody TopicRequest topicRequest) {
-        return topicService.createTopic(topicRequest);
+    public ResponseEntity<TopicResponse> createTopic(@CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody TopicRequest topicRequest) {
+        return topicService.createTopic(currentUser, topicRequest);
     }
 
     @Transactional

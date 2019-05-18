@@ -24,6 +24,7 @@ public class TopicResponse {
     private String description;
     private String imageUrl;
     private Long createdBy;
+    private String createdByName;
     private Instant creationDateTime;
     private Set<WikiData> wikiData;
     private List<Content> contentList;
