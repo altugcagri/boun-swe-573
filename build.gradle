@@ -21,7 +21,7 @@ sonarqube {
 									  "src/main/java/com/altugcagri/smep/config/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/response/*",
-									  "**/test/java/com/altugcagri/smep/**/*"]
+									  "**/*Test*/**"]
 	}
 }
 
