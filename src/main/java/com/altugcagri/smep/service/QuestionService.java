@@ -4,7 +4,6 @@ import com.altugcagri.smep.controller.dto.request.AnswerRequest;
 import com.altugcagri.smep.controller.dto.request.QuestionRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.LearningStepsResponse;
-import com.altugcagri.smep.persistence.model.Choice;
 import com.altugcagri.smep.security.UserPrincipal;
 import org.springframework.http.ResponseEntity;
 
