@@ -145,7 +145,19 @@ public class TopicServiceTest extends AbstractServiceTest {
     }
 
     @Test(expected = NotValidTopicException.class)
-    public void testPublishStatusUpdate_NotValidTopic() {
+    public void testPublishStatusUpdate_NotValidTopic_NullOrEmptyContentList() {
+        //Prepare
+        final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
+        final Topic topic = TestUtils.createDummyTopic();
+        topic.setContentList(null);
+        topic.setCreatedBy(currentUser.getId());
+        when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.of(topic));
+        //Test
+        sut.publishStatusUpdate(currentUser, publishRequest);
+    }
+
+    @Test(expected = NotValidTopicException.class)
+    public void testPublishStatusUpdate_NotValidTopic_NullOrEmptyQuestionList() {
         //Prepare
         final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
         final Topic topic = TestUtils.createDummyTopic();
