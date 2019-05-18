@@ -14,6 +14,25 @@ group = 'com.altugcagri.smep'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+jacoco
+		{
+			toolVersion = "0.7.6.201602180812"
+			reportsDir = file("$buildDir/coverageReport")
+		}
+
+jacocoTestReport
+		{
+			additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+			sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+			classDirectories = files(sourceSets.main.output)
+			reports
+					{
+						html.enabled = true
+						xml.enabled = true
+						csv.enabled = false
+					}
+		}
+
 sonarqube {
 	properties {
 		property "sonar.coverage.jacoco.xmlReportPaths", jacocoMergeFiles
