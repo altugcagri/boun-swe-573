@@ -19,8 +19,7 @@ sonarqube {
 		property "sonar.coverage.jacoco.xmlReportPaths", jacocoMergeFiles
 		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
 									  "src/main/java/com/altugcagri/smep/config/*",
-									  "src/main/java/com/altugcagri/smep/controller/dto/*",
-									  "src/test/java/com/altugcagri/smep/*"]
+									  "src/main/java/com/altugcagri/smep/controller/dto/*"]
 	}
 }
 
