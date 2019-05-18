@@ -30,13 +30,13 @@ jacocoTestReport {
 sonarqube {
 	properties {
 		property "sonar.jacoco.reportPaths", jacocoMergeFiles
+		property "sonar.test.inclusions", "**/*Test*/**"
+		property "sonar.test.exclusions", "**/*Test*/**"
 		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
 									  "src/main/java/com/altugcagri/smep/config/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/response/*"]
-		property "sonar.test.inclusions", "**/*Test*/**"
-		property "sonar.test.exclusions", ["**/*Test*/**", "**/*.html"]
-		property "sonar.exclusions", ["**/*Test*/**", "**/*.html"]
+
 	}
 }
 
