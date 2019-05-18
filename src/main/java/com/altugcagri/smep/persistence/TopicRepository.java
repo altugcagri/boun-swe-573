@@ -16,13 +16,11 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findByCreatedBy(Long userId);
 
+    List<Topic> findByPublished(Boolean published);
+
     long countByCreatedBy(Long userId);
 
     void deleteById(Long topicId);
 
-    List<Topic> findByIdIn(List<Long> topicIds);
-
-    List<Topic> findByIdIn(List<Long> topicIds, Sort sort);
-
-    List<Topic> findTopicByEnrolledUsersContains(User user);
+    List<Topic> findTopicByEnrolledUsersContainsAndPublished(User user,Boolean published);
 }

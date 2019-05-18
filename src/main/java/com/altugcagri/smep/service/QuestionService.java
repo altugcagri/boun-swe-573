@@ -12,9 +12,6 @@ public interface QuestionService {
 
     ResponseEntity<ApiResponse> createQuestionByContentId(UserPrincipal currentUser, QuestionRequest questionRequest);
 
-    ResponseEntity<ApiResponse> createChoiceByQuestionId(UserPrincipal currentUser, Long questionId,
-            Choice choiceRequest);
-
     ResponseEntity<ApiResponse> deleteQuestionById(Long questionId, UserPrincipal currentUser);
 
     ResponseEntity<LearningStepsResponse> getLearningSteps(UserPrincipal currentUser, Long contentId);

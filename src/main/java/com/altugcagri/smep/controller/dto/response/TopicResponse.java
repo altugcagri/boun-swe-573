@@ -27,5 +27,6 @@ public class TopicResponse {
     private Instant creationDateTime;
     private Set<WikiData> wikiData;
     private List<Content> contentList;
+    private boolean published;
 
 }

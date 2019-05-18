@@ -29,6 +29,7 @@ public class ContentRequestToContentTest {
     public void testConvertSuccessfully() {
         //Prepare
         final ContentRequest source = TestUtils.createDummyContentRequest();
+        source.setId(1L);
         //Test
         final Content content = sut.convert(source);
         //Verify

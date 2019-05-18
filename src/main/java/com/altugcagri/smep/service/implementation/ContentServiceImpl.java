@@ -67,11 +67,9 @@ public class ContentServiceImpl implements ContentService {
 
         final AtomicLong nextContentId = new AtomicLong(0L);
 
-        if (content.getTopic().getContentList() != null) {
-            content.getTopic().getContentList().stream()
-                    .map(Content::getId).collect(Collectors.toList()).stream().filter(id -> id > contentId).min(
-                    Comparator.comparing(Long::valueOf)).ifPresent(nextContentId::set);
-        }
+        content.getTopic().getContentList().stream()
+                .map(Content::getId).collect(Collectors.toList()).stream().filter(id -> id > contentId).min(
+                Comparator.comparing(Long::valueOf)).ifPresent(nextContentId::set);
 
         Objects.requireNonNull(contentResponse).setNextContentId(nextContentId.get());
 

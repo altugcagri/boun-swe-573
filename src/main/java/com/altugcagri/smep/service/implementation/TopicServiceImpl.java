@@ -2,9 +2,11 @@ package com.altugcagri.smep.service.implementation;
 
 
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
+import com.altugcagri.smep.controller.dto.request.PublishRequest;
 import com.altugcagri.smep.controller.dto.request.TopicRequest;
 import com.altugcagri.smep.controller.dto.response.ApiResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
+import com.altugcagri.smep.exception.NotValidTopicException;
 import com.altugcagri.smep.exception.ResourceNotFoundException;
 import com.altugcagri.smep.persistence.TopicRepository;
 import com.altugcagri.smep.persistence.UserRepository;
@@ -47,7 +49,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public ResponseEntity<List<TopicResponse>> getAllTopics(UserPrincipal currentUser) {
-        return ResponseEntity.ok().body(topicRepository.findAll().stream()
+        return ResponseEntity.ok().body(topicRepository.findByPublished(true).stream()
                 .map(topic -> smepConversionService.convert(topic, TopicResponse.class)).collect(
                         Collectors.toList()));
     }
@@ -89,6 +91,27 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public ResponseEntity<ApiResponse> publishStatusUpdate(UserPrincipal currentUser, PublishRequest publishRequest) {
+        final Topic topic = topicRepository.findById(publishRequest.getTopicId())
+                .orElseThrow(() -> new ResourceNotFoundException(TOPIC, "id", publishRequest.getTopicId().toString()));
+
+        SmeptUtilities.checkCreatedBy(TOPIC, currentUser.getId(), topic.getCreatedBy());
+
+        if (publishRequest.isPublish() && topic.getContentList() != null) {
+            topic.getContentList().forEach(content -> {
+                if (content.getQuestionList() == null || content.getQuestionList().isEmpty()) {
+                    throw new NotValidTopicException(topic.getId().toString(),
+                            "All contents must have at least one question. Please Check Your Contents!");
+                }
+            });
+        }
+
+        topic.setPublished(publishRequest.isPublish());
+        topicRepository.save(topic);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Topic published successfully"));
+    }
+
+    @Override
     public ResponseEntity<ApiResponse> deleteTopicById(Long topicId, UserPrincipal currentUser) {
         final Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new ResourceNotFoundException(TOPIC, "id", topicId.toString()));
@@ -117,7 +140,7 @@ public class TopicServiceImpl implements TopicService {
     public ResponseEntity<List<TopicResponse>> getTopicsByEnrolledUserId(UserPrincipal currentUser, Long userId) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
-        final List<Topic> enrolledTopics = topicRepository.findTopicByEnrolledUsersContains(user);
+        final List<Topic> enrolledTopics = topicRepository.findTopicByEnrolledUsersContainsAndPublished(user, true);
 
         return ResponseEntity.ok()
                 .body(enrolledTopics.stream().map(topic -> smepConversionService.convert(topic, TopicResponse.class))

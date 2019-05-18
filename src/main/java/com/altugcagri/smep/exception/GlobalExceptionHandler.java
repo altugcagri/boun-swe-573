@@ -36,4 +36,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiResponse response = new ApiResponse(false, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(NotValidTopicException.class)
+    protected ResponseEntity<ApiResponse> handleNotValidTopicException(NotValidTopicException ex) {
+        final ApiResponse response = new ApiResponse(false, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

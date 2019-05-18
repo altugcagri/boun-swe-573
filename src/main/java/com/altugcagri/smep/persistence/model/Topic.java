@@ -48,6 +48,9 @@ public class Topic extends UserCreatedDataBaseEntity {
     private String imageUrl;
 
     @Nullable
+    private boolean published;
+
+    @Nullable
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "topic")
     private List<Content> contentList;
 
