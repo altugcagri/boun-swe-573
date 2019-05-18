@@ -119,7 +119,7 @@ public class TopicServiceTest extends AbstractServiceTest {
         when(topicRepository.save(topic)).thenReturn(topic);
         when(smepConversionService.convert(topic, TopicResponse.class)).thenReturn(topicResponse);
         //Test
-        final ResponseEntity<TopicResponse> responseEntity = sut.createTopic(topicRequest);
+        final ResponseEntity<TopicResponse> responseEntity = sut.createTopic(currentUser, topicRequest);
         //Verify
         assertNotNull(responseEntity.getBody());
     }

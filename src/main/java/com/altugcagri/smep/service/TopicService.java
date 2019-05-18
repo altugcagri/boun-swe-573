@@ -18,7 +18,7 @@ public interface TopicService {
 
     ResponseEntity<TopicResponse> getTopicById(Long topicId, UserPrincipal currentUser);
 
-    ResponseEntity<TopicResponse> createTopic(TopicRequest topicRequest);
+    ResponseEntity<TopicResponse> createTopic(UserPrincipal currentUser, TopicRequest topicRequest);
 
     ResponseEntity<ApiResponse> publishStatusUpdate(UserPrincipal currentUser, PublishRequest publishRequest);
 

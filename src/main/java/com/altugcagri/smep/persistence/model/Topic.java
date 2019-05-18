@@ -50,6 +50,9 @@ public class Topic extends UserCreatedDataBaseEntity {
     @Nullable
     private boolean published;
 
+    @NotBlank
+    private String createdByName;
+
     @Nullable
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "topic")
     private List<Content> contentList;

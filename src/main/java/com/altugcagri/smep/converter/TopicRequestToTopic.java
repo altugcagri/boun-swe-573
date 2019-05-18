@@ -15,6 +15,7 @@ public class TopicRequestToTopic implements Converter<TopicRequest, Topic> {
                 .wikiDataSet(source.getWikiData())
                 .enrolledUsers(source.getEnrolledUsers())
                 .imageUrl(source.getImageUrl())
+                .createdByName(source.getCreatedByName())
                 .build();
 
         if (source.getId() != 0L) {

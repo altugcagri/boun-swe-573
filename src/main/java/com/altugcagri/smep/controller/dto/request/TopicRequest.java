@@ -29,6 +29,8 @@ public class TopicRequest {
 
     @NotBlank
     private String description;
+    
+    private String createdByName;
 
     @NotBlank
     private String imageUrl;

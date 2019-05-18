@@ -53,9 +53,9 @@ public class TopicControllerTest extends AbstractEntityControllerTest {
         final TopicRequest request = TopicRequest.builder().contentList(new ArrayList<>()).description("description")
                 .id(0L).imageUrl("someUrl").title("title").wikiData(new HashSet<>()).build();
         //Test
-        sut.createTopic(request);
+        sut.createTopic(currentUser, request);
         //Verify
-        verify(topicService, times(1)).createTopic(request);
+        verify(topicService, times(1)).createTopic(currentUser, request);
     }
 
     @Test

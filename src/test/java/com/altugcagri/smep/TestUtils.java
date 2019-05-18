@@ -1,5 +1,6 @@
 package com.altugcagri.smep;
 
+import com.altugcagri.smep.controller.dto.request.AnswerRequest;
 import com.altugcagri.smep.controller.dto.request.ChoiceRequest;
 import com.altugcagri.smep.controller.dto.request.ContentRequest;
 import com.altugcagri.smep.controller.dto.request.EnrollmentRequest;
@@ -40,6 +41,12 @@ public class TestUtils {
         choice.setId(0L);
         choice.setText("someText");
         return choice;
+    }
+
+    public static List<Choice> createDummyChoiceList() {
+        final List<Choice> choiceList = new ArrayList<>();
+        choiceList.add(createDummyChoice());
+        return choiceList;
     }
 
     public static ContentRequest createDummyContentRequest() {
@@ -204,20 +211,26 @@ public class TestUtils {
         return publishRequest;
     }
 
-
-    public static LearningStep createDummyLearningStep(){
+    public static LearningStep createDummyLearningStep() {
         final LearningStep learningStep = new LearningStep();
-        learningStep.setAnswerId(1L);
-        learningStep.setContentId(1L);
-        learningStep.setQuestionId(1L);
-        learningStep.setUserId(1L);
+        learningStep.setAnswerId(0L);
+        learningStep.setContentId(0L);
+        learningStep.setQuestionId(0L);
+        learningStep.setUserId(0L);
         learningStep.setCreatedBy(0L);
         return learningStep;
     }
 
-    public static List<LearningStep> createDummyLearningStepList(){
+    public static List<LearningStep> createDummyLearningStepList() {
         final List<LearningStep> learningSteps = new ArrayList<>();
         learningSteps.add(createDummyLearningStep());
         return learningSteps;
+    }
+
+    public static AnswerRequest createDummyAnswerRequest() {
+        final AnswerRequest answerRequest = new AnswerRequest();
+        answerRequest.setChoiceId(0L);
+        answerRequest.setQuestionId(0L);
+        return answerRequest;
     }
 }
