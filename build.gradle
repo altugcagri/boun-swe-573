@@ -16,8 +16,11 @@ sourceCompatibility = '1.8'
 
 sonarqube {
 	properties {
-		property "sonar.jacoco.reportPaths", jacocoMergeFiles
-		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence"]
+		property "sonar.coverage.jacoco.xmlReportPaths", jacocoMergeFiles
+		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
+									  "src/main/java/com/altugcagri/smep/config/*",
+									  "src/main/java/com/altugcagri/smep/controller/dto/*",
+									  "src/test/java/com/altugcagri/smep/*"]
 	}
 }
 
