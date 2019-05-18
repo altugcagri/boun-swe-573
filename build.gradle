@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
-def jacocoMergeFiles = "${buildDir}/jacoco/jacocoMerge.exec"
+def jacocoMergeFiles = "${buildDir}/jacoco/test.exec"
 
 group = 'com.altugcagri.smep'
 version = '0.0.1-SNAPSHOT'
