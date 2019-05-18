@@ -12,6 +12,7 @@ import com.altugcagri.smep.controller.dto.response.ContentResponse;
 import com.altugcagri.smep.controller.dto.response.TopicResponse;
 import com.altugcagri.smep.persistence.model.Choice;
 import com.altugcagri.smep.persistence.model.Content;
+import com.altugcagri.smep.persistence.model.LearningStep;
 import com.altugcagri.smep.persistence.model.Question;
 import com.altugcagri.smep.persistence.model.Topic;
 import com.altugcagri.smep.persistence.model.User;
@@ -196,10 +197,27 @@ public class TestUtils {
         return loginRequest;
     }
 
-    public static PublishRequest createDummyPublisRequest() {
+    public static PublishRequest createDummyPublishRequest() {
         final PublishRequest publishRequest = new PublishRequest();
         publishRequest.setPublish(true);
         publishRequest.setTopicId(0L);
         return publishRequest;
+    }
+
+
+    public static LearningStep createDummyLearningStep(){
+        final LearningStep learningStep = new LearningStep();
+        learningStep.setAnswerId(1L);
+        learningStep.setContentId(1L);
+        learningStep.setQuestionId(1L);
+        learningStep.setUserId(1L);
+        learningStep.setCreatedBy(0L);
+        return learningStep;
+    }
+
+    public static List<LearningStep> createDummyLearningStepList(){
+        final List<LearningStep> learningSteps = new ArrayList<>();
+        learningSteps.add(createDummyLearningStep());
+        return learningSteps;
     }
 }

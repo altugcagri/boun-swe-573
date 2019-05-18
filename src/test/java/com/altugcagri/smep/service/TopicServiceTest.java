@@ -127,7 +127,7 @@ public class TopicServiceTest extends AbstractServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     public void testpublishStatusUpdate_TopicNotFound() {
         //Prepare
-        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
         when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.empty());
         //Test
         sut.publishStatusUpdate(currentUser, publishRequest);
@@ -136,7 +136,7 @@ public class TopicServiceTest extends AbstractServiceTest {
     @Test(expected = CreatedByException.class)
     public void testPublishStatusUpdate_CreateByFail() {
         //Prepare
-        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
         final Topic topic = TestUtils.createDummyTopic();
         topic.setCreatedBy(1L);
         when(topicRepository.findById(publishRequest.getTopicId())).thenReturn(Optional.of(topic));
@@ -147,7 +147,7 @@ public class TopicServiceTest extends AbstractServiceTest {
     @Test(expected = NotValidTopicException.class)
     public void testPublishStatusUpdate_NotValidTopic() {
         //Prepare
-        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
         final Topic topic = TestUtils.createDummyTopic();
         final List<Content> contentList = TestUtils.createDummyContentList();
         contentList.get(0).setQuestionList(null);
@@ -161,7 +161,7 @@ public class TopicServiceTest extends AbstractServiceTest {
     @Test
     public void testPublishStatusUpdate_Success() {
         //Prepare
-        final PublishRequest publishRequest = TestUtils.createDummyPublisRequest();
+        final PublishRequest publishRequest = TestUtils.createDummyPublishRequest();
         final Topic topic = TestUtils.createDummyTopic();
         final List<Content> contentList = TestUtils.createDummyContentList();
         final List<Question> questionList = TestUtils.createDummyQuetionList();
