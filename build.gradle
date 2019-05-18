@@ -16,7 +16,10 @@ sourceCompatibility = '1.8'
 
 sonarqube {
 	properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.java.coveragePlugin", "jacoco"
 		property "sonar.jacoco.reportPaths", jacocoMergeFiles
+        property "sonar.sources", "src/main"
 		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
 									  "src/main/java/com/altugcagri/smep/config/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
