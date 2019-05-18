@@ -2,9 +2,9 @@ package com.altugcagri.smep.exception;
 
 public class NotValidTopicException extends RuntimeException {
 
-    public NotValidTopicException(String topicId, String message) {
+    public NotValidTopicException(String title, String message) {
 
         super(String
-                .format("Topic with id: '%s' is not valid Reason: '%s'", topicId, message));
+                .format("Topic with title: '%s' is not valid Reason: '%s'", title, message));
     }
 }

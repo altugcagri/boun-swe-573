@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -86,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
         final AtomicReference<String> contentTitle = new AtomicReference<>();
         final AtomicReference<String> topicTitle = new AtomicReference<>();
         final AtomicReference<Long> topicId = new AtomicReference<>();
-        final AtomicLong nextContentId = new AtomicLong();
+        final AtomicReference<Long> nextContentId = new AtomicReference<>();
 
         contentRepository.findById(contentId)
                 .ifPresent(content -> {

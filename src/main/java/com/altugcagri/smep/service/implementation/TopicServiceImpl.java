@@ -97,10 +97,16 @@ public class TopicServiceImpl implements TopicService {
 
         SmeptUtilities.checkCreatedBy(TOPIC, currentUser.getId(), topic.getCreatedBy());
 
-        if (publishRequest.isPublish() && topic.getContentList() != null) {
+        if (publishRequest.isPublish()) {
+
+            if(topic.getContentList() == null){
+                throw new NotValidTopicException(topic.getTitle(),
+                        "All topics must have at least one content. Please Check Your Topic!");
+            }
+
             topic.getContentList().forEach(content -> {
                 if (content.getQuestionList() == null || content.getQuestionList().isEmpty()) {
-                    throw new NotValidTopicException(topic.getId().toString(),
+                    throw new NotValidTopicException(topic.getTitle(),
                             "All contents must have at least one question. Please Check Your Contents!");
                 }
             });
