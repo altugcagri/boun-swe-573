@@ -99,7 +99,7 @@ public class TopicServiceImpl implements TopicService {
 
         if (publishRequest.isPublish()) {
 
-            if(topic.getContentList() == null){
+            if(topic.getContentList() == null || topic.getContentList().isEmpty()){
                 throw new NotValidTopicException(topic.getTitle(),
                         "All topics must have at least one content. Please Check Your Topic!");
             }
