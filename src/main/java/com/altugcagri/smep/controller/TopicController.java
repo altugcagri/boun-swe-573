@@ -54,9 +54,9 @@ public class TopicController {
     }
 
     @Transactional
-    @PostMapping(value = "/publish/")
+    @PostMapping(value = "/publish")
     public ResponseEntity<ApiResponse> publishStatusUpdate(@CurrentUser UserPrincipal currentUser,
-            PublishRequest publishRequest) {
+            @RequestBody PublishRequest publishRequest) {
         return topicService.publishStatusUpdate(currentUser, publishRequest);
     }
 
