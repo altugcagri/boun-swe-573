@@ -33,8 +33,11 @@ sonarqube {
 		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
 									  "src/main/java/com/altugcagri/smep/config/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
-									  "src/main/java/com/altugcagri/smep/controller/dto/response/*",
-									  "**/*Test*/**"]
+									  "src/main/java/com/altugcagri/smep/controller/dto/response/*"]
+		property "sonar.sources", "src/main"
+		property "sonar.test.inclusions", "**/*Test*/**"
+		property "sonar.test.exclusions", ["**/*Test*/**", "**/*.html"]
+		property "sonar.exclusions", ["**/*Test*/**", "**/*.html"]
 	}
 }
 
