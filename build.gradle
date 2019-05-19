@@ -8,16 +8,36 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
-def jacocoMergeFiles = "${buildDir}/jacoco/jacocoMerge.exec"
+def jacocoMergeFiles = "${buildDir}/jacoco/test.exec"
 
 group = 'com.altugcagri.smep'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+jacoco {
+	toolVersion = "0.8.3"
+	reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination file("${buildDir}/jacocoHtml")
+	}
+}
+
 sonarqube {
 	properties {
 		property "sonar.jacoco.reportPaths", jacocoMergeFiles
-		property "sonar.exclusions", "/test/**/*.java"
+		property "sonar.test.inclusions", "**/*Test*/**"
+		property "sonar.test.exclusions", "**/*Test*/**"
+		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
+									  "src/main/java/com/altugcagri/smep/config/*",
+									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
+									  "src/main/java/com/altugcagri/smep/controller/dto/response/*",
+									  "src/main/java/com/altugcagri/smep/security/UserPrincipal*"]
+
 	}
 }
 

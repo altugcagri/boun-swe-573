@@ -126,8 +126,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public ResponseEntity<ApiResponse> giveAnswer(UserPrincipal currentUser, AnswerRequest answerRequest) {
 
-        final Content content = questionRepository.findById(answerRequest.getQuestionId()).map(Question::getContent)
-                .get();
+        final Question question = questionRepository.findById(answerRequest.getQuestionId())
+                .orElseThrow(() -> new ResourceNotFoundException(QUESTION, "id", answerRequest.getQuestionId().toString()));
+
+        final Content content = question.getContent();
 
         final LearningStep learningStep = learningStepRepository
                 .findByUserIdAndContentIdAndQuestionIdAndAnswerId(currentUser.getId(), content.getId(),
