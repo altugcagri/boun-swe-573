@@ -37,11 +37,15 @@ class TopicPreview extends Component {
             topicId: topicId,
             username: this.props.currentUser.username
         }
+
+        this.setState({ loading: true })
         axios.post(url, reqObj, REQUEST_HEADERS)
             .then(res => {
                 toast.notify("Enrolled successfully.", { position: "top-right" });
                 this.props.history.push(`/topic/view/${topicId}`)
             }).catch(err => {
+                this.setState({ loading: false })
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -57,6 +61,7 @@ class TopicPreview extends Component {
                 })
                 this.getEnrolledTopicsByUserId();
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -74,6 +79,7 @@ class TopicPreview extends Component {
                 }
 
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }

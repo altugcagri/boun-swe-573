@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { REQUEST_HEADERS } from "../constants";
 import axios from "axios";
+import toast from "toasted-notes";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,6 +32,7 @@ class UserCreatedTopicList extends Component {
                 loading: false
             })
         }).catch(err => {
+            toast.notify("Something went wrong!", { position: "top-right" });
             console.log(err)
         });
     }
@@ -42,6 +44,7 @@ class UserCreatedTopicList extends Component {
             .then(res => {
                 this.loadUserCreatedTopics()
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
 
@@ -80,10 +83,12 @@ class UserCreatedTopicList extends Component {
                                                         <img src={topic.imageUrl} className="img-fluid mb-2" alt={topic.title} />
                                                         <h4>{topic.title}</h4>
                                                         <div className="topicCaption">{topic.description}</div>
+                                                        <hr />
                                                         <WikiLabels wikis={topic.wikiData} />
                                                         <hr />
-                                                        <Link className="btn btn-sm btn-outline-primary" to={`/topic/${topic.id}`}>Details</Link>
-                                                        <Button className="ml-2 btn-sm" variant="outline-danger" onClick={() => this.handleDeleteTopicById(topic.id)}>Delete</Button>
+                                                        <Link className="btn btn-sm btn-outline-primary fullWidth" to={`/topic/${topic.id}`}>Details</Link>
+                                                        <p />
+                                                        <Button className="btn btn-sm fullWidth" variant="outline-danger" onClick={() => this.handleDeleteTopicById(topic.id)}>Delete</Button>
                                                     </div>
                                                 </div>
                                             </div>

@@ -5,10 +5,12 @@ import toast from "toasted-notes";
 import { createQuestion } from "../util/APIUtils";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import loadingGif from '../img/loading.gif'
 
 function QuestionModal(FieldProps) {
     const [modalState, setModalState] = useState(false)
     const [refreshState, setRefreshState] = useState(false)
+    const [loadingState, setLoadingState] = useState(false)
 
     useEffect(() => {
         FieldProps.handleRefresh()
@@ -21,7 +23,7 @@ function QuestionModal(FieldProps) {
             </Button>
             <Modal show={modalState} onHide={() => { setModalState(false) }}>
                 <Modal.Header closeButton>
-                    <Modal.Title>New Question</Modal.Title>
+                    <Modal.Title>{loadingState ? (<span><img src={loadingGif} width="30" alt="" /> </span>) : 'New Question'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Formik
@@ -34,6 +36,7 @@ function QuestionModal(FieldProps) {
                             return errors;
                         }}
                         onSubmit={(values, { setSubmitting }) => {
+                            setLoadingState(true)
                             setTimeout(() => {
                                 const newQuestion = {
                                     contentId: FieldProps.contentId,
@@ -44,6 +47,7 @@ function QuestionModal(FieldProps) {
                                         toast.notify("Question created successfully.", { position: "top-right" });
                                         setModalState(false)
                                         setRefreshState(true)
+                                        setLoadingState(false)
                                     }).catch(err => {
                                         toast.notify("Something went wrong!", { position: "top-right" });
                                     });
@@ -60,7 +64,7 @@ function QuestionModal(FieldProps) {
                                         <ErrorMessage name="text" component="div" />
                                     </div>
                                 </div>
-                                <Button variant="success" type="submit" block disabled={isSubmitting}>Save</Button>
+                                <Button variant="success" type="submit" block disabled={isSubmitting}>{loadingState ? "Loading" : 'Save'}</Button>
                             </Form>
                         )}
                     </Formik>
