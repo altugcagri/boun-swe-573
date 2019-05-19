@@ -59,9 +59,4 @@ public class User extends DataBaseEntity {
     @ManyToMany(mappedBy = "enrolledUsers")
     private Set<Topic> enrolledTopics;
 
-    @JsonIgnore
-    @Nullable
-    @ManyToMany(mappedBy = "answeredUsers")
-    private Set<Choice> answeredChoices;
-
 }

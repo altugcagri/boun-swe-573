@@ -4,7 +4,7 @@ import com.altugcagri.smep.controller.dto.response.ContentResponse;
 import com.altugcagri.smep.persistence.model.Content;
 import org.springframework.core.convert.converter.Converter;
 
-public class ContentToContetResponse implements Converter<Content, ContentResponse> {
+public class ContentToContentResponse implements Converter<Content, ContentResponse> {
 
     @Override
     public ContentResponse convert(Content source) {
@@ -13,6 +13,8 @@ public class ContentToContetResponse implements Converter<Content, ContentRespon
                 .title(source.getTitle())
                 .text(source.getText())
                 .topicId(source.getTopic().getId())
+                .topicTitle(source.getTopic().getTitle())
+                .questionCount((long) (source.getQuestionList() != null ? source.getQuestionList().size() : 0))
                 .build();
     }
 }

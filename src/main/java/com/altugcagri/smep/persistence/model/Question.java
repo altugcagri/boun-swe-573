@@ -12,11 +12,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -33,7 +33,7 @@ public class Question extends UserCreatedDataBaseEntity {
     private Long id;
 
     @NotBlank
-    @Size(max = 255)
+    @Lob
     private String text;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")

@@ -1,12 +1,12 @@
-export const API_BASE_URL = 'http://18.184.25.154:8080/api';
-// export const API_BASE_URL = 'http://192.168.1.55:8080/api';
-// export const API_BASE_URL = '/api';
+//export const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = 'http://54.93.200.247:8080/api';
+//export const API_BASE_URL = 'http://192.168.1.40:8080/api';
 export const ACCESS_TOKEN = 'accessToken';
 
 export const REQUEST_HEADERS = {
     headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN) }
 }
-
+/*
 export const TOPIC_LIST_SIZE = 30;
 export const MAX_CHOICES = 6;
 export const POLL_QUESTION_MAX_LENGTH = 140;
@@ -21,4 +21,4 @@ export const USERNAME_MAX_LENGTH = 15;
 export const EMAIL_MAX_LENGTH = 40;
 
 export const PASSWORD_MIN_LENGTH = 6;
-export const PASSWORD_MAX_LENGTH = 20;
+export const PASSWORD_MAX_LENGTH = 20; */

@@ -15,8 +15,10 @@ public class TopicToTopicResponse implements Converter<Topic, TopicResponse> {
                 .imageUrl(source.getImageUrl())
                 .contentList(source.getContentList())
                 .createdBy(source.getCreatedBy())
+                .createdByName(source.getCreatedByName())
                 .creationDateTime(source.getCreatedAt())
-                .wikiData(source.getWikiData())
+                .wikiData(source.getWikiDataSet())
+                .published(source.isPublished())
                 .build();
     }
 }

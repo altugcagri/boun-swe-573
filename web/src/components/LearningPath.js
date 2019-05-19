@@ -2,27 +2,37 @@ import React, { Component } from 'react';
 import { Col, ListGroup, Tab, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { createOption } from "../util/APIUtils";
 import { Link } from "react-router-dom";
-import { faChevronRight, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faChevronRight, faTrash, faEdit, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import QuestionModal from "./QuestionModal";
 import OptionModal from "./OptionModal";
-import { API_BASE_URL, REQUEST_HEADERS } from "../constants";
+import { REQUEST_HEADERS } from "../constants";
 import axios from "axios";
 import toast from "toasted-notes";
+import { resolveEndpoint } from "../util/Helpers";
+import { giveAnswer } from '../util/APIUtils';
 
 export class PathNavigator extends Component {
 
     render() {
-        const contentList = this.props.contents;
+        const { contents, linkable, preview } = this.props;
         return (
 
-            <Col sm={3}>
+            <Col sm={(linkable || preview) ? 12 : 3}>
                 <ListGroup>
-                    {contentList.map((content, contentId) => {
+                    {contents.map((content, contentId) => {
                         return (
                             <ListGroup.Item key={contentId} action eventKey={content.id}>
-                                {contentId + 1} - {content.title} <FontAwesomeIcon icon={faChevronRight} />
+                                {linkable ? (
+                                    <Link className="font-white" to={`/content/view/${content.id}`}>
+                                        {contentId + 1} - {content.title} <FontAwesomeIcon icon={faChevronRight} />
+                                    </Link>
+                                ) : (
+                                        <span>
+                                            {contentId + 1} - {content.title} <FontAwesomeIcon icon={faChevronRight} />
+                                        </span>
+                                    )}
+
                             </ListGroup.Item>
                         )
                     })}
@@ -61,12 +71,13 @@ export class PathTabs extends Component {
 export class PathElement extends Component {
 
     handleDeleteContentById(contentId) {
-        const url = API_BASE_URL + `/contents/${contentId}`;
+        let url = resolveEndpoint('deleteContentById', [{ "slug1": contentId }]);
         axios.delete(url, REQUEST_HEADERS)
             .then(res => {
                 toast.notify("Material deleted successfully.", { position: "top-right" });
                 this.props.handleRefresh()
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -74,7 +85,7 @@ export class PathElement extends Component {
     render() {
         const { content, questions, editable, handleRefresh } = this.props
         return (
-            <div className=" bg-alt materialBody">
+            <div className="bg-alt materialBody">
                 <h4 className="mb-4 fontMedium">
                     {content.title}
                     {editable && (
@@ -87,25 +98,35 @@ export class PathElement extends Component {
                 </h4>
                 <div className="text-left" dangerouslySetInnerHTML={{ __html: content.text }} ></div>
                 {
-                    questions.length > 0 && (
-                        <React.Fragment>
-                            <hr />
-                            {
-                                questions.map((question, idx) => {
-                                    return (
-                                        <Question
-                                            key={idx}
-                                            order={idx + 1}
-                                            question={question}
-                                            editable={editable}
-                                            handleRefresh={handleRefresh}
-                                            answered={false}
-                                        />
-                                    )
-                                })
-                            }
-                        </React.Fragment>
-                    )
+                    editable ? (
+                        questions.length > 0 && (
+                            <React.Fragment>
+                                <hr />
+                                {
+                                    questions.map((question, idx) => {
+                                        return (
+                                            <Question
+                                                key={idx}
+                                                order={idx + 1}
+                                                question={question}
+                                                editable={editable}
+                                                handleRefresh={handleRefresh}
+                                                answered={false}
+                                            />
+                                        )
+                                    })
+                                }
+                            </React.Fragment>
+                        )
+                    ) :
+                        (
+                            <div className="text-right">
+                                <hr />
+                                <Link className="btn btn-success btn-sm ml-2 inlineBtn" to={`/content/${content.id}/quiz`}><FontAwesomeIcon icon={faChevronRight} /> Start Section Quiz</Link>
+
+                            </div>
+                        )
+
                 }
             </div>
         )
@@ -127,13 +148,14 @@ export class Question extends Component {
     }
 
     handleDeleteQuestionById(questionIdToDelete) {
-        const url = API_BASE_URL + `/questions/${questionIdToDelete}`;
+        let url = resolveEndpoint('deleteQuestionById', [{ "slug1": questionIdToDelete }]);
 
         axios.delete(url, REQUEST_HEADERS)
             .then(res => {
                 toast.notify("Question deleted successfully.", { position: "top-right" });
                 this.props.handleRefresh()
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -171,19 +193,19 @@ export class Question extends Component {
                             }}
                             onSubmit={(values, { setSubmitting }) => {
                                 setTimeout(() => {
-                                    const newOption = {
-                                        choice: values.choice,
-                                        question: question.id
+                                    const newAnswer = {
+                                        choiceId: values.choice,
+                                        questionId: question.id
                                     };
-                                    this.setState({ disabled: true })
-                                    console.log(newOption)
-                                    /* createOption(newOption)
+                                    giveAnswer(newAnswer)
                                         .then(res => {
                                             toast.notify("Answer given.", { position: "top-right" });
+                                            this.setState({ disabled: true })
 
                                         }).catch(err => {
                                             toast.notify("Something went wrong!", { position: "top-right" });
-                                        }); */
+                                            this.setState({ disabled: true })
+                                        });
                                     setSubmitting(false);
                                 }, 400);
                             }}
@@ -202,13 +224,22 @@ export class Question extends Component {
                                                                 className="choices"
                                                                 disabled={disabled}
                                                                 value={choice.id}
+                                                                checked={question.userAnswer && ((question.userAnswer.id === choice.id) ? true : false)}
                                                             />
                                                         } {choice.text}
-                                                        {editable && (
-                                                            <span>
-                                                                {choice.isCorrect && " (correct)"}
-                                                            </span>
+                                                        {(editable || disabled) && (
+                                                            <small className="text-success">
+                                                                <em> {choice.correct && " (correct)"}</em>
+                                                            </small>
                                                         )}
+
+                                                        {question.userAnswer && (question.userAnswer.id === choice.id) ? (
+                                                            <strong>
+                                                                {
+                                                                    choice.correct ? (<span className="text-success"> <FontAwesomeIcon icon={faCheck} /></span>) : <span className="text-danger"> <FontAwesomeIcon icon={faTimes} /></span>
+                                                                }
+                                                            </strong>
+                                                        ) : false}
 
 
                                                     </li>
@@ -225,7 +256,7 @@ export class Question extends Component {
                                                     type="submit"
                                                     disabled={disabled}
                                                     id={`question${question.id}`} >
-                                                    {disabled ? 'Answered' : 'Give Answer'}
+                                                    {disabled ? 'Answered' : 'Answer'}
                                                 </Button>
                                             </div>
                                         )}

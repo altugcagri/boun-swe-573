@@ -14,12 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -35,8 +35,8 @@ public class Choice extends UserCreatedDataBaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @NotBlank
-    @Size(max = 255)
     private String text;
 
     @NotNull
@@ -46,11 +46,4 @@ public class Choice extends UserCreatedDataBaseEntity{
     @ManyToOne
     private Question question;
 
-    @Nullable
-    @ManyToMany
-    @JoinTable(name = "answered_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "choice_id")
-    )
-    private Set<User> answeredUsers;
 }

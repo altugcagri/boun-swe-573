@@ -16,6 +16,11 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class ContentServiceImpl implements ContentService {
@@ -58,9 +63,18 @@ public class ContentServiceImpl implements ContentService {
         final Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new ResourceNotFoundException(CONTENT, "id", contentId.toString()));
 
-        return ResponseEntity.ok().body(smepConversionService.convert(content, ContentResponse.class));
-    }
+        final ContentResponse contentResponse = smepConversionService.convert(content, ContentResponse.class);
 
+        final AtomicLong nextContentId = new AtomicLong(0L);
+
+        content.getTopic().getContentList().stream()
+                .map(Content::getId).collect(Collectors.toList()).stream().filter(id -> id > contentId).min(
+                Comparator.comparing(Long::valueOf)).ifPresent(nextContentId::set);
+
+        Objects.requireNonNull(contentResponse).setNextContentId(nextContentId.get());
+
+        return ResponseEntity.ok().body(contentResponse);
+    }
 
     @Override
     public ResponseEntity<ApiResponse> deleteContentById(UserPrincipal currentUser, Long contentId) {
