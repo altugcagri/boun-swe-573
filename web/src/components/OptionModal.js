@@ -5,10 +5,12 @@ import toast from "toasted-notes";
 import { createOption } from "../util/APIUtils";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import loadingGif from '../img/loading.gif'
 
 function OptionModal(FieldProps) {
     const [modalState, setModalState] = useState(false)
     const [refreshState, setRefreshState] = useState(false)
+    const [loadingState, setLoadingState] = useState(false)
 
     useEffect(() => {
         FieldProps.handleRefresh()
@@ -21,7 +23,7 @@ function OptionModal(FieldProps) {
             </Button>
             <Modal show={modalState} onHide={() => { setModalState(false) }}>
                 <Modal.Header closeButton>
-                    <Modal.Title>New Option</Modal.Title>
+                    <Modal.Title>{loadingState ? (<span><img src={loadingGif} width="30" alt="" /> </span>) : 'New Option'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Formik
@@ -34,6 +36,7 @@ function OptionModal(FieldProps) {
                             return errors;
                         }}
                         onSubmit={(values, { setSubmitting }) => {
+                            setLoadingState(true)
                             setTimeout(() => {
                                 const newOption = {
                                     questionId: FieldProps.questionId,
@@ -45,6 +48,7 @@ function OptionModal(FieldProps) {
                                         toast.notify("Option created successfully.", { position: "top-right" });
                                         setModalState(false)
                                         setRefreshState(true)
+                                        setLoadingState(false)
                                     }).catch(err => {
                                         toast.notify("Something went wrong!", { position: "top-right" });
                                     });
@@ -67,7 +71,7 @@ function OptionModal(FieldProps) {
                                     </div>
                                 </div>
 
-                                <Button variant="success" type="submit" block disabled={isSubmitting}>Save</Button>
+                                <Button variant="success" type="submit" block disabled={isSubmitting}>{loadingState ? "Loading" : 'Save'}</Button>
                             </Form>
                         )}
                     </Formik>

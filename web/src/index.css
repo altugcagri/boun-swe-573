@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Amiri:400,700&display=swap&subset=latin-ext');
 
 body {
     margin: 0;
@@ -11,6 +12,11 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.serif{
+    font-family: 'Amiri', serif;
+    font-size: 20px;
 }
 
 /************************* 
@@ -279,13 +285,13 @@ code {
 }
 
 .Toaster__alert{
-    background: #28a745 !important;
-    color: white !important;
+    background: white !important;
+    color: #212529 !important;
     border-radius: 0 !important;
 }
 
 .Toaster__alert_text{
-    color: white !important;
+    color: #212529 !important;
 }
 
 .Toaster__manager-top-right{
@@ -351,7 +357,7 @@ code {
 }
 
 .topicCaption{
-    height: 50px;
+    height: 150px;
     overflow: hidden;
     line-height: 24px;
 }

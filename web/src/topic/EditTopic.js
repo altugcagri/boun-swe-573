@@ -10,6 +10,7 @@ import { Link, withRouter } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { resolveEndpoint } from "../util/Helpers";
 import Loading from '../components/Loading';
+import loadingGif from '../img/loading.gif'
 
 class EditTopic extends Component {
     constructor(props) {
@@ -23,7 +24,8 @@ class EditTopic extends Component {
             wikiDataSearch: [],
             selectedWikis: [],
             topic: false,
-            loading: true
+            loading: true,
+            loadingWiki: false
         };
         this.handleKeywordChange = this.handleKeywordChange.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
@@ -35,12 +37,15 @@ class EditTopic extends Component {
     handleKeywordChange(event) {
         clearTimeout(this.timer);
 
+        this.setState({ loadingWiki: true })
+
         const value = event.target.value;
         if (value !== '') {
             this.timer = setTimeout(() => {
                 const url = wdk.searchEntities(value, 'en', 15, 'json');
                 axios.get(url)
                     .then(response => {
+                        this.setState({ loadingWiki: false })
                         if (response.data.search.length > 0) {
                             this.setState({ wikiDataSearch: response.data.search })
                             toast.notify("Found in WikiData!", { position: "top-right" })
@@ -68,6 +73,7 @@ class EditTopic extends Component {
             .then(res => {
                 this.setState({ topic: res.data, selectedWikis: res.data.wikiData, loading: false })
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -77,18 +83,33 @@ class EditTopic extends Component {
     }
 
     addWiki(wiki) {
-        const newWiki = {
-            conceptUri: wiki.concepturi,
-            description: wiki.description,
-            id: wiki.id,
-            label: wiki.label
-        }
-
         const { selectedWikis } = this.state;
 
-        this.setState({
-            selectedWikis: selectedWikis.concat(newWiki)
-        });
+        let match = false;
+
+        selectedWikis.map((currentWiki, idx) => {
+            if (currentWiki.id === wiki.id) {
+                match = true
+                return true;
+            }
+            return false
+        })
+
+        if (match) {
+            this.removeWiki(wiki.id)
+        } else {
+            const newWiki = {
+                conceptUri: wiki.concepturi,
+                description: wiki.description,
+                id: wiki.id,
+                label: wiki.label
+            }
+
+
+            this.setState({
+                selectedWikis: selectedWikis.concat(newWiki)
+            });
+        }
     }
 
     removeWiki(wikiId) {
@@ -105,10 +126,8 @@ class EditTopic extends Component {
     }
 
     render() {
-        const { topic, wikiDataSearch, selectedWikis, loading } = this.state;
+        const { topic, wikiDataSearch, selectedWikis, loading, loadingWiki } = this.state;
         const props = this.props;
-
-
 
         return (
             <React.Fragment>
@@ -118,7 +137,7 @@ class EditTopic extends Component {
                             topic && (
                                 <React.Fragment>
                                     <PageHeader title="Edit Topic">
-                                        <Link to={`/${this.props.currentUser.username}/topics/created`} className="breadcrumbLink">
+                                        <Link to={`/${props.currentUser.username}/topics/created`} className="breadcrumbLink">
                                             <span>My Topics</span>
                                         </Link>
                                     </PageHeader>
@@ -127,9 +146,13 @@ class EditTopic extends Component {
                                         <div className="container w-90 text-left">
                                             <div className="row">
                                                 <div className="col-md-3">
-                                                    <h4 style={{ fontSize: '20px' }}>Things to <strong>Consider</strong></h4>
+                                                    <h4 style={{ fontSize: '20px' }}><strong>How to edit Topic</strong></h4>
                                                     <hr />
-                                                    <p style={{ fontSize: '14px', textAlign: 'justify' }}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Neque ipsam ut consectetur vel excepturi alias laboriosam totam fuga reprehenderit officiis, sed aliquam accusamus repellat laborum! Fuga cupiditate porro exercitationem quod.</p>
+                                                    <p style={{ fontSize: '14px', textAlign: 'justify' }}>
+                                                        In order to edit a topic you can simply edit  Title, Main Image Url, Description and Keyword areas.<br />
+                                                        You can search any label from Keyword area. According to your search, some labels will be ordered. You can select or unselect the labels as you wish.<br />
+                                                        After saving your topic, it will be unpublished. Don not forget to Publish it again! <br />
+                                                    </p>
                                                 </div>
                                                 <div className="col-md-8 offset-md-1">
                                                     <Formik
@@ -158,15 +181,22 @@ class EditTopic extends Component {
                                                                     description: values.description,
                                                                     wikiData: selectedWikis,
                                                                 };
-                                                                console.log(newTopic);
 
-                                                                createTopic(newTopic)
-                                                                    .then(res => {
-                                                                        toast.notify("Content updated successfully.", { position: "top-right" });
-                                                                        props.history.push(`/topic/${topicId}`);
-                                                                    }).catch(err => {
-                                                                        toast.notify("Topic does not exist!", { position: "top-right" });
-                                                                    });
+                                                                if (selectedWikis.length === 0) {
+                                                                    toast.notify(<span className="text-danger">You must select at least one Wiki.</span>, { position: "top-right" });
+                                                                } else {
+                                                                    this.setState({ loading: true })
+                                                                    createTopic(newTopic)
+                                                                        .then(res => {
+                                                                            toast.notify("Content updated successfully.", { position: "top-right" });
+                                                                            props.history.push(`/topic/${topicId}`);
+                                                                        }).catch(err => {
+                                                                            this.setState({ loading: false })
+                                                                            toast.notify("Something went wrong!", { position: "top-right" });
+                                                                        });
+                                                                }
+
+
 
                                                                 setSubmitting(false);
                                                             }, 400);
@@ -177,14 +207,14 @@ class EditTopic extends Component {
                                                                 <div className="form-group row text-left">
                                                                     <label htmlFor="topicTitle" className="col-sm-12 col-form-label">Topic <strong>Title</strong></label>
                                                                     <div className="col-sm-12">
-                                                                        <Field type="text" name="title" id="topicTitle" placeholder="Topic title" className="form-control" />
+                                                                        <Field type="text" name="title" id="topicTitle" placeholder="Topic title" required className="form-control" />
                                                                         <ErrorMessage name="topicTitle" component="div" />
                                                                     </div>
                                                                 </div>
                                                                 <div className="form-group row text-left">
                                                                     <label htmlFor="topicImage" className="col-sm-12 col-form-label">Topic <strong>Image</strong></label>
                                                                     <div className="col-sm-12">
-                                                                        <Field type="text" name="imageUrl" id="topicImage" placeholder="Topic image" className="form-control" />
+                                                                        <Field type="text" name="imageUrl" id="topicImage" placeholder="Topic image" required className="form-control" />
                                                                         <ErrorMessage name="topicImage" component="div" />
                                                                     </div>
                                                                 </div>
@@ -192,14 +222,14 @@ class EditTopic extends Component {
                                                                 <div className="form-group row text-left">
                                                                     <label htmlFor="topicDescription" className="col-sm-12 col-form-label">Topic <strong>Body</strong> </label>
                                                                     <div className="col-sm-12">
-                                                                        <Field type="text" component="textarea" rows="7" name="description" id="description" placeholder="Topic description" className="form-control" />
+                                                                        <Field type="text" component="textarea" rows="7" name="description" required id="description" placeholder="Topic description" className="form-control" />
                                                                         <ErrorMessage name="topicDescription" component="div" />
                                                                     </div>
                                                                 </div>
                                                                 {selectedWikis.length > 0 && (
                                                                     <div>
                                                                         Added Wiki:
-                                                                <ul>
+                                                                        <ul>
                                                                             {selectedWikis.map((wiki, idx) => {
                                                                                 return (
                                                                                     <li key={idx}>
@@ -213,7 +243,9 @@ class EditTopic extends Component {
                                                                 )}
 
                                                                 <div className="form-group row text-left">
-                                                                    <label htmlFor="topicDescription" className="col-sm-12 col-form-label">Keyword </label>
+                                                                    <label htmlFor="topicDescription" className="col-sm-12 col-form-label">
+                                                                        {loadingWiki ? (<span><img src={loadingGif} width="30" alt="" /> Searching WikiData...</span>) : 'Keyword'}
+                                                                    </label>
 
                                                                     <div className="col-sm-12">
                                                                         <input type="text" name="wikiKeyword" placeholder="Wiki keywords" onChange={this.handleKeywordChange} className="form-control" />
@@ -230,7 +262,6 @@ class EditTopic extends Component {
                                                                                     <React.Fragment>
                                                                                         <Col md="1">
                                                                                             <input type="checkbox" onChange={() => this.addWiki(wiki)} value={wiki} />
-
                                                                                         </Col>
                                                                                         <Col md="9">{wiki.description}</Col>
                                                                                         <Col md="2">
@@ -242,8 +273,6 @@ class EditTopic extends Component {
                                                                         )
                                                                     })
                                                                 )}
-
-
                                                                 <Button variant="success" type="submit" block disabled={isSubmitting}>Save</Button>
                                                             </Form>
                                                         )}
@@ -258,7 +287,6 @@ class EditTopic extends Component {
                     </React.Fragment>
                 )}
             </React.Fragment>
-
         )
     }
 }

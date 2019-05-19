@@ -1,6 +1,5 @@
 import { ACCESS_TOKEN } from '../constants';
 import { resolveEndpoint } from "./Helpers";
-import { func } from 'prop-types';
 
 const request = (options) => {
     const headers = new Headers({
@@ -100,7 +99,7 @@ export function signup(signupRequest) {
     });
 }
 
-export function checkUsernameAvailability(username) {
+/* export function checkUsernameAvailability(username) {
     let url = resolveEndpoint('checkUsernameAvailability', [{ "slug1": username }]);
     return request({
         url: url,
@@ -114,7 +113,7 @@ export function checkEmailAvailability(email) {
         url: url,
         method: 'GET'
     });
-}
+} */
 
 
 export function getCurrentUser() {

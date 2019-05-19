@@ -18,11 +18,12 @@ export class WikiLabel extends Component {
 export class WikiLabels extends Component {
     render() {
         const wikiData = this.props.wikis
+
         return (
             <React.Fragment>
                 {
-                    wikiData && (
-                        <p className="card-text text-justify">
+                    wikiData.length > 0 && (
+                        <p className="card-text ">
                             {wikiData.map((wiki, idx) => {
                                 return <WikiLabel key={idx} wiki={wiki} />
                             })}

@@ -1,6 +1,7 @@
 {
     "createTopic": "/topics",
     "updateTopic": "/topics/edit",
+    "toggleTopicPublish": "/topics/publish",
     "getAllTopics": "/topics",
     "getTopicById": "/topics/topic/[slug1]",
     "enrollToTopic": "/topics/enroll/",

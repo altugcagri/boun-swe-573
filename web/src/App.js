@@ -95,8 +95,24 @@ class App extends Component {
                         <Switch>
 
                             <Route exact path="/" component={Home}></Route>
+                            {
+                                this.state.isAuthenticated ? (
+                                    <PrivateRoute
+                                        path="/explore"
+                                        component={Glossary}
+                                        authenticated={this.state.isAuthenticated}
+                                        currentUser={this.state.currentUser ? this.state.currentUser : null}>
+                                    </PrivateRoute>
+                                ) : (
 
-                            <Route path="/explore" component={Glossary}></Route>
+                                        <Route
+                                            path="/explore"
+                                            component={Glossary}
+                                        >
+                                        </Route>
+                                    )
+                            }
+
 
                             <Route path="/login"
                                 render={(props) => <Login
@@ -107,7 +123,8 @@ class App extends Component {
                             <Route path="/signup" component={Signup}></Route>
 
                             <PrivateRoute
-                                exact path="/:username"
+                                exact={true}
+                                path="/:username"
                                 authenticated={this.state.isAuthenticated}
                                 currentUser={this.state.currentUser}
                                 component={UserProfile}

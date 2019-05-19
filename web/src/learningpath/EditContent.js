@@ -29,6 +29,7 @@ class EditContent extends Component {
             .then(res => {
                 this.setState({ content: res.data, loading: false })
             }).catch(err => {
+                toast.notify("Something went wrong!", { position: "top-right" });
                 console.log(err)
             });
     }
@@ -57,10 +58,13 @@ class EditContent extends Component {
                                         <div className="container text-left ">
                                             <div className="row">
                                                 <div className="col-md-3">
-                                                    <h4 style={{ fontSize: '20px' }}>Things to <strong>Consider</strong></h4>
+                                                    <h4 style={{ fontSize: '20px' }}><strong>How to Edit Content</strong></h4>
                                                     <hr />
-                                                    <p style={{ fontSize: '14px', textAlign: 'justify' }}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Neque ipsam ut consectetur vel excepturi alias laboriosam totam
-                            fuga reprehenderit officiis, sed aliquam accusamus repellat laborum! Fuga cupiditate porro exercitationem quod.</p>
+                                                    <p style={{ fontSize: '14px', textAlign: 'justify' }}>
+                                                        You should edit Material Title, and Material Body. You can also add images to material body. Feel free!<br />
+                                                        You can add questions and their answers in edit mode also.<br /><br />
+                                                        Remember, every topic has to have at least one content, and every content must have at least one question to be published<br />
+                                                    </p>
                                                 </div>
                                                 <div className="col-md-8 offset-md-1">
                                                     <Formik
@@ -94,7 +98,7 @@ class EditContent extends Component {
                                                                         toast.notify("Content updated successfully.", { position: "top-right" });
                                                                         props.history.push(`/topic/${topicId}`);
                                                                     }).catch(err => {
-                                                                        toast.notify("Topic does not exist!", { position: "top-right" });
+                                                                        toast.notify("Something went wrong!", { position: "top-right" });
                                                                     });
 
                                                                 setSubmitting(false);
