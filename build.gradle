@@ -35,7 +35,8 @@ sonarqube {
 		property "sonar.exclusions", ["src/main/java/com/altugcagri/smep/persistence/model/*",
 									  "src/main/java/com/altugcagri/smep/config/*",
 									  "src/main/java/com/altugcagri/smep/controller/dto/request/*",
-									  "src/main/java/com/altugcagri/smep/controller/dto/response/*"]
+									  "src/main/java/com/altugcagri/smep/controller/dto/response/*",
+									  "src/main/java/com/altugcagri/smep/security/UserPrincipal*"]
 
 	}
 }
