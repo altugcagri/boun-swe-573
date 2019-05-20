@@ -10,7 +10,6 @@ import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -23,7 +22,6 @@ public class ChoiceRequest {
     private Long questionId;
 
     @NotBlank
-    @Size(max = 255)
     private String text;
 
     @NotNull

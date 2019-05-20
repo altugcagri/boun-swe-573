@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -21,7 +20,6 @@ public class QuestionRequest {
     private Long contentId;
 
     @NotBlank
-    @Size(max = 255)
     private String text;
 
 
