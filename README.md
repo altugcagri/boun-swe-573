@@ -12,6 +12,72 @@
 * [Project Management Structure Document](docs/ProjectManagementStructure.md "Project Management Structure")
 
 
+## Installation
+
+In order to install and run the project [Java](https://www.java.com) Jdk v8+ and [Gradle](https://gradle.org/) must be installed.
+
+Set JAVA_HOME like "C:\Program Files\Java\jdk1.8.0_12", "bin" folder is not required. Otherwise gradle tasks can fail.
+
+In order to run the project on docker environment [Docker](https://docs.docker.com/) must be installed.
+
+After installation  of Java, Gradle and Docker, you can clone the project from the [repository](https://github.com/altugcagri/boun-swe-573.git) into your workspace.
+
+## Build
+
+After cloning the project go to workspace and run the gradle command:
+
+```sh
+$ .\gradlew build
+```
+
+in order to run tests run the gradle command:
+
+```sh
+$ .\gradlew test
+```
+
+## Run Without Docker Containerization
+
+After building the project running the project requires the steps below;
+
+Since project requires eureka-server and zuul-server, first these two services should run respectively.
+
+com.altugcagri.smep-service:
+
+```sh
+$ java -jar build/libs/com.altugcagri.smep-0.0.1-SNAPSHOT.jar
+```
+
+## Run With Docker Containerization
+
+After building the project, Simply run the commands according to your scalability choice;
+
+In the directory where Dockerfile exists
+
+Build image of BackEnd:
+
+```sh
+$ docker build -f Dockerfile --tag={ContainerName} .
+```
+
+Run Container of BackEnd:
+
+```sh
+$ docker run -p 8080:8080 {ContainerName}
+```
+
+Build image of BackEnd:
+
+```sh
+$ docker build -f WebDockerfile --tag={ContainerName} .
+```
+
+Run Container of BackEnd:
+
+```sh
+$ docker run -p 5000:5000 {ContainerName}
+```
+
 ### Guides
 The following guides illustrates how to use certain features concretely:
 
