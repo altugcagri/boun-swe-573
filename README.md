@@ -16,7 +16,7 @@
 
 In order to install and run the backend project [Java](https://www.java.com) Jdk v8+ and [Gradle](https://gradle.org/) must be installed.
 
-In order to install and run the frontend project [Node](https://nodejs.org/en/)
+In order to install and run the frontend project [Node](https://nodejs.org/en/) must be istalled
 
 Set JAVA_HOME like "C:\Program Files\Java\jdk1.8.0_12", "bin" folder is not required. Otherwise gradle tasks can fail.
 
