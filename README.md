@@ -14,15 +14,17 @@
 
 ## Installation
 
-In order to install and run the project [Java](https://www.java.com) Jdk v8+ and [Gradle](https://gradle.org/) must be installed.
+In order to install and run the backend project [Java](https://www.java.com) Jdk v8+ and [Gradle](https://gradle.org/) must be installed.
+
+In order to install and run the frontend project [Node](https://nodejs.org/en/)
 
 Set JAVA_HOME like "C:\Program Files\Java\jdk1.8.0_12", "bin" folder is not required. Otherwise gradle tasks can fail.
 
-In order to run the project on docker environment [Docker](https://docs.docker.com/) must be installed.
+In order to run the projects on docker environment [Docker](https://docs.docker.com/) must be installed.
 
 After installation  of Java, Gradle and Docker, you can clone the project from the [repository](https://github.com/altugcagri/boun-swe-573.git) into your workspace.
 
-## Build
+## Build BackEnd
 
 After cloning the project go to workspace and run the gradle command:
 
@@ -36,11 +38,31 @@ in order to run tests run the gradle command:
 $ .\gradlew test
 ```
 
-## Run Without Docker Containerization
+## Build FrontEnd
+
+After cloning the project go to web folder under the workspace and run the commands respectively;
+
+```sh
+$ npm install
+```
+
+Dowloads necessary packages and dependencies.
+
+```sh
+$ npm run build
+```
+
+Builds the app for production to the `build` folder.<br>
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.<br>
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Run BackEnd Without Docker
 
 After building the project running the project requires the steps below;
-
-Since project requires eureka-server and zuul-server, first these two services should run respectively.
 
 com.altugcagri.smep-service:
 
@@ -48,7 +70,31 @@ com.altugcagri.smep-service:
 $ java -jar build/libs/com.altugcagri.smep-0.0.1-SNAPSHOT.jar
 ```
 
-## Run With Docker Containerization
+It runs the backend project
+
+## Run FrontEnd Without Docker
+
+After building the project running the project requires the steps below;
+
+Go to web folder under the workspace
+
+Since project requires com.altugcagri.smep-service, it is recomended to run backend first.
+
+frontend:
+
+```sh
+$ npm install -g serve
+```
+
+It downloads and install necessery serving packages.
+
+```sh
+$ serve -s build
+```
+It runs the frontend project 
+
+
+## Build and Run With Docker
 
 After building the project, Simply run the commands according to your scalability choice;
 
