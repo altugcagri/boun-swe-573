@@ -8,10 +8,6 @@
                                     Swe 573 - Fundamentals of Software Engineering 2019/Spring
                                     
                                   
-## Table of contents
-* [Project Management Structure Document](docs/ProjectManagementStructure.md "Project Management Structure")
-
-
 ## Installation
 
 In order to install and run the backend project [Java](https://www.java.com) Jdk v8+, [Gradle](https://gradle.org/) and [Postgresql database](https://www.postgresql.org/)  must be installed.
